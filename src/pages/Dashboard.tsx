@@ -62,16 +62,16 @@ const Dashboard = () => {
               {callActions.map((action) => (
                 <Link
                   to={action.link}
-                  className="link-dash shadow-1 bg-white rounded-2xl"
+                  className="link-dash rounded-2xl bg-green-400"
                   key={action.title}
                 >
-                  <div className="card bg-third px-8 py-6 rounded-2xl h-full flex items-center justify-center">
+                  <div className="card px-8 py-6 rounded-2xl h-full flex items-center justify-center">
                     <div className="items-center justify-center flex-col gap-4 relative z-2 flex">
                       <action.icon
                         size={40}
-                        className="bg-first text-white rounded-full p-1"
+                        className="text-white rounded-full p-1"
                       />
-                      <p className="text-md text-center">{action.title}</p>
+                      <p className="text-md text-center text-white">{action.title}</p>
                     </div>
                   </div>
                 </Link>

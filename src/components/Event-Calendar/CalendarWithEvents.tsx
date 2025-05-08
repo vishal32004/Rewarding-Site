@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar } from "@/components/Event-Calendar/MonthlyView";
+import { MonthlyView } from "@/components/Event-Calendar/MonthlyView";
 import { DailyView } from "@/components/Event-Calendar/DailyView";
 import { WeeklyView } from "@/components/Event-Calendar/WeeklyView";
 import { EventModal } from "@/components/Event-Calendar/EventModal";
@@ -137,7 +137,7 @@ export default function CalendarPage() {
       </div>
 
       {currentView === "monthly" && (
-        <Calendar
+        <MonthlyView
           events={sampleEvents}
           onEventClick={handleEventClick}
           currentMonth={currentDate}
