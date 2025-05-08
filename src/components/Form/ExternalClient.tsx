@@ -2,10 +2,10 @@ import { SelectItem } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import CustomFormField from "./CustomFormField";
-import { FormFieldType } from "@/types/form";
-import { Form } from "../ui/form";
-import { Button } from "../ui/button";
+import CustomFormField from "@/components/CustomFormField";
+import { FormFieldType } from "@/@types/CustomFormField.types";
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 
 const enterpriseFormSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),

@@ -3,9 +3,9 @@ import { SelectItem } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import CustomFormField from "./CustomFormField";
-import { FormFieldType } from "@/types/form";
-import { Form } from "../ui/form";
+import CustomFormField from "@/components/CustomFormField";
+import { FormFieldType } from "@/@types/CustomFormField.types";
+import { Form } from "@/components/ui/form";
 
 const customerFormSchema = z.object({
   customerName: z.string().min(1, "Customer name is required"),
@@ -31,7 +31,13 @@ const customerFormSchema = z.object({
   insuranceDueDate: z.date().optional(),
   // New fields
   occupation: z.enum(["Service", "Business"]),
-  annualIncomeLevel: z.enum(["Below 5L", "5L-10L", "10L-20L", "20L-50L", "Above 50L"]),
+  annualIncomeLevel: z.enum([
+    "Below 5L",
+    "5L-10L",
+    "10L-20L",
+    "20L-50L",
+    "Above 50L",
+  ]),
   requirement: z.enum(["Immediately", "Within 3 months", "After 3 months"]),
 });
 
