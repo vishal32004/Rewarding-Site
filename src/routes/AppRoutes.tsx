@@ -1,5 +1,5 @@
 import Dashboard from "@/pages/Dashboard";
-// import CreateNewCampaign from "@/pages/Campaign/CreateNewCampaign";
+import CreateNewCampaign from "@/pages/Campaign/CreateNewCampaign";
 // import ViewCampaign from "@/pages/Campaign/ViewCampaign";
 // import Storefront from "@/pages/Storefront";
 // import Admin from "@/pages/Admin/Admin";
@@ -23,10 +23,10 @@ const AppRoutes: RouteObject = {
       index: true,
       element: <Dashboard />,
     },
-    // {
-    //   path: "/create-new-campaign",
-    //   element: <CreateNewCampaign />,
-    // },
+    {
+      path: "/create-new-campaign",
+      element: <CreateNewCampaign />,
+    },
     // {
     //   path: "/view-campaign",
     //   element: <ViewCampaign />,
