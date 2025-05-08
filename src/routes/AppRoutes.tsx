@@ -1,4 +1,4 @@
-// import Dashboard from "@/pages/Dashboard";
+import Dashboard from "@/pages/Dashboard";
 // import CreateNewCampaign from "@/pages/Campaign/CreateNewCampaign";
 // import ViewCampaign from "@/pages/Campaign/ViewCampaign";
 // import Storefront from "@/pages/Storefront";
@@ -18,64 +18,64 @@ import { RouteObject } from "react-router-dom";
 const AppRoutes: RouteObject = {
   path: "/",
   element: <AppLayout />,
-//   children: [
-//     {
-//       index: true,
-//       element: <Dashboard />,
-//     },
-//     {
-//       path: "/create-new-campaign",
-//       element: <CreateNewCampaign />,
-//     },
-//     {
-//       path: "/view-campaign",
-//       element: <ViewCampaign />,
-//     },
-//     {
-//       path: "/storefront",
-//       element: <Storefront />,
-//     },
-//     {
-//       path: "/admins",
-//       element: <Admin />,
-//     },
-//     {
-//       path: "/email-template",
-//       element: <EmailTemplatesGallery />,
-//     },
-//     {
-//       path: "/payment",
-//       element: <Payment />,
-//     },
-//     {
-//       path: "/add-funds",
-//       element: <AddFunds />,
-//     },
-//     {
-//       path: "/transation-history",
-//       element: <TransactionHistory />,
-//     },
-//     {
-//       path: "/notification",
-//       element: <NotificationSettings />,
-//     },
-//     {
-//       path: "/landing-page",
-//       element: <LandingPageList />,
-//     },
-//     {
-//       path: "/landing/:id/preview",
-//       element: <PreviewLandingTemplate />,
-//     },
-//     {
-//       path: "/landing/:id/edit",
-//       element: <EditLandingPageTemplate />,
-//     },
-//     {
-//       path: "/reports",
-//       element: <ReportsPage />,
-//     },
-//   ],
+  children: [
+    {
+      index: true,
+      element: <Dashboard />,
+    },
+    // {
+    //   path: "/create-new-campaign",
+    //   element: <CreateNewCampaign />,
+    // },
+    // {
+    //   path: "/view-campaign",
+    //   element: <ViewCampaign />,
+    // },
+    // {
+    //   path: "/storefront",
+    //   element: <Storefront />,
+    // },
+    // {
+    //   path: "/admins",
+    //   element: <Admin />,
+    // },
+    // {
+    //   path: "/email-template",
+    //   element: <EmailTemplatesGallery />,
+    // },
+    // {
+    //   path: "/payment",
+    //   element: <Payment />,
+    // },
+    // {
+    //   path: "/add-funds",
+    //   element: <AddFunds />,
+    // },
+    // {
+    //   path: "/transation-history",
+    //   element: <TransactionHistory />,
+    // },
+    // {
+    //   path: "/notification",
+    //   element: <NotificationSettings />,
+    // },
+    // {
+    //   path: "/landing-page",
+    //   element: <LandingPageList />,
+    // },
+    // {
+    //   path: "/landing/:id/preview",
+    //   element: <PreviewLandingTemplate />,
+    // },
+    // {
+    //   path: "/landing/:id/edit",
+    //   element: <EditLandingPageTemplate />,
+    // },
+    // {
+    //   path: "/reports",
+    //   element: <ReportsPage />,
+    // },
+  ],
 };
 
 export default AppRoutes;
