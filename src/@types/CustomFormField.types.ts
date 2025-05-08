@@ -1,13 +1,14 @@
 export enum FormFieldType {
-    INPUT,
-    TEXTAREA,
-    CHECKBOX,
-    SELECT,
-    DATE_PICKER,
-    COLOR_PICKER,
-    RADIO,
-    COMBOBOX,
-    QUANTITY_CONTROLLER,
-    CHECKBOX_GROUP,
-    RADIO_CARD
+    INPUT = "input",
+    TEXTAREA = "textarea",
+    CHECKBOX = "checkbox",
+    SELECT = "select",
+    DATE_PICKER = "date_picker",
+    COLOR_PICKER = "color_picker",
+    RADIO = "radio",
+    COMBOBOX = "combobox",
+    QUANTITY_CONTROLLER = "quantity_controller",
+    CHECKBOX_GROUP = "checkbox_group",
+    RADIO_CARD = "radio_card",
+    TABLE = "table"
 }

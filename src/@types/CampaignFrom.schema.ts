@@ -23,6 +23,17 @@ export const formSchema = z
         quantity: z.number().min(1, { message: "Please Enter the Quantity" }),
         points: z.string().min(1, { message: "Please Enter A Valid Option" }),
         advanedDetails: z.boolean().optional(),
+        catalogData: z.object({
+            selectedProducts: z.string().array().min(1, {
+                message: "Please select at least one product"
+            }),
+            filters: z.object({
+                category: z.string(),
+                maxPrice: z.number().min(0),
+                minPrice: z.number().min(0),
+                sortBy: z.string()
+            })
+        }),
         scheduledDate: z.date(),
         personalMessage: z.string().min(2, {
             message: "Too Small",
@@ -32,13 +43,6 @@ export const formSchema = z
         }),
         eventAddress: z.string().min(2, {
             message: "Please Add A Valid Address",
-        }),
-        catalogSelectedProducts: z.array(z.string()),
-        catalogFilters: z.object({
-            category: z.string(),
-            minPrice: z.number(),
-            maxPrice: z.number(),
-            sortBy: z.enum(["priceLowToHigh", "priceHighToLow", "popularity"]),
         }),
         landingPageTemplate: z.string(),
         emailTemplate: z.string(),

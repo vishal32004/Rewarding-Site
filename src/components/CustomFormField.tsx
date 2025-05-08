@@ -35,6 +35,14 @@ import {
 import { Combobox } from "@/components/ui/combobox";
 import { QuantityController } from "@/components/QuantityController";
 import { FormFieldType } from "@/@types/CustomFormField.types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export type RadioOptionType = {
   label: string;
@@ -50,6 +58,14 @@ export type ComboboxOptionType = {
 export type RadioCardOptionType = {
   value: string;
   content: React.ReactNode;
+};
+
+export type RecipientType = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  department: string;
 };
 
 interface BaseFieldProps {
@@ -96,8 +112,14 @@ interface QuantityFieldProps extends BaseFieldProps {
   min?: number;
   max?: number;
 }
+
 interface RadioCardFieldProps extends BaseFieldProps {
   radioCardoptions?: RadioCardOptionType[];
+}
+
+interface TableFieldProps extends BaseFieldProps {
+  recipients?: RecipientType[];
+  searchTerm?: string;
 }
 
 export interface CustomFormFieldProps<T extends FieldValues> {
@@ -121,8 +143,10 @@ export interface CustomFormFieldProps<T extends FieldValues> {
   inputType?: string;
   classNames?: string;
   radioCardoptions?: RadioCardOptionType[];
-  checkboxValue?: number;
+  recipients?: RecipientType[];
+  searchTerm?: string;
 }
+
 interface RenderFieldProps<T extends FieldValues> {
   field: ControllerRenderProps<T, Path<T>>;
   props: CustomFormFieldProps<T>;
@@ -303,6 +327,65 @@ const QuantityField = memo(
   )
 );
 
+const TableField = memo(
+  ({ field, recipients = [], searchTerm = "" }: TableFieldProps) => {
+    const filteredRecipients = recipients.filter(
+      (recipient) =>
+        recipient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        recipient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        recipient.phone.includes(searchTerm) ||
+        recipient.department.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Select</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Department</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredRecipients.length > 0 ? (
+              filteredRecipients.map((recipient) => (
+                <TableRow key={recipient.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={field.value?.includes(recipient.id)}
+                      onCheckedChange={(checked) => {
+                        const newValue = checked
+                          ? [...(field.value || []), recipient.id]
+                          : field.value?.filter(
+                              (id: number) => id !== recipient.id
+                            ) || [];
+                        field.onChange(newValue);
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>{recipient.name}</TableCell>
+                  <TableCell>{recipient.email}</TableCell>
+                  <TableCell>{recipient.phone}</TableCell>
+                  <TableCell>{recipient.department}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center">
+                  No results found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  }
+);
+
 const renderDatePickerValue = (
   value: Date | Date[] | null | undefined,
   multipleDates?: boolean
@@ -361,6 +444,7 @@ const RadioCardField = memo(
     </FormControl>
   )
 );
+
 const fieldComponents = {
   [FormFieldType.INPUT]: InputField,
   [FormFieldType.SELECT]: SelectField,
@@ -371,6 +455,7 @@ const fieldComponents = {
   [FormFieldType.COMBOBOX]: ComboboxField,
   [FormFieldType.QUANTITY_CONTROLLER]: QuantityField,
   [FormFieldType.RADIO_CARD]: RadioCardField,
+  [FormFieldType.TABLE]: TableField,
 };
 
 function RenderField<T extends FieldValues>({

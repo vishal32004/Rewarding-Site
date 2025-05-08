@@ -3,16 +3,24 @@ import { WizardForm } from "@/components/Form/wizard-form";
 import { WizardStep } from "@/components/Form/wizard";
 import CustomFormField from "@/components/CustomFormField";
 import { FormFieldType } from "@/@types/CustomFormField.types";
-import { Code, Hash, Link, Link2Icon, ShoppingCart } from "lucide-react";
+import {
+  Check,
+  Code,
+  Hash,
+  Link,
+  Link2Icon,
+  ShoppingCart,
+  Star,
+  X,
+} from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { calculateTotal } from "@/lib/helper";
 // import Payment from "@/components/Payment";
 import { templates } from "@/data/email-templates";
-import { products, Product } from "@/data/form-products";
 import { recipients } from "@/data/recipients";
 import { formSchema } from "@/@types/CampaignFrom.schema";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useCampaignFormStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,16 +32,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { useDebounce } from "@/hooks/use-debounce";
 import ReceptionistDialog from "@/components/Receptionist/receptioinst-dialog";
 import { useQuery } from "@tanstack/react-query";
-interface Filters {
-  category: string;
-  minPrice: number;
-  maxPrice: number;
-  sortBy: "priceLowToHigh" | "priceHighToLow" | "popularity";
-}
-
+import { Filters } from "@/@types/Catalog.types";
 const defaultValues = {
   campaignName: "",
   description: "",
@@ -53,16 +54,6 @@ const defaultValues = {
   personalMessage: "",
   link: "",
   eventAddress: "",
-  catalogSelectedProducts: [] as string[],
-  catalogFilters: {
-    category: "",
-    minPrice: 0,
-    maxPrice: 1000,
-    sortBy: "priceLowToHigh" as
-      | "priceLowToHigh"
-      | "priceHighToLow"
-      | "popularity",
-  },
   landingPageTemplate: "",
   emailTemplate: "",
   smsContent: "",
@@ -77,10 +68,18 @@ const defaultValues = {
 };
 
 const CreateNewCampaign = () => {
-  const { loadEvents, events } = useCampaignFormStore();
-
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const {
+    loadEvents,
+    events,
+    filteredProducts,
+    loadProducts,
+    selectedProducts,
+    filters,
+    applyFilters,
+    toggleProductSelection,
+    resetFilters,
+    clearSelectedProducts,
+  } = useCampaignFormStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -95,7 +94,6 @@ const CreateNewCampaign = () => {
     "sendReminderAfterInitialGift",
     "sendReminderBeforeExpiration",
     "forWho",
-    "searchRecipients",
   ]);
   const [
     distributionType,
@@ -105,24 +103,16 @@ const CreateNewCampaign = () => {
     sendReminderAfterInitialGift,
     sendReminderBeforeExpiration,
     forWho,
-    searchRecipients,
   ] = watchedValues;
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(
-      {
-        ...data,
-        catalogData: {
-          selectedProducts: selectedProducts,
-          filters: form.watch("catalogFilters"),
-          selectedProductDetails: products.filter((p) =>
-            selectedProducts.includes(p.id)
-          ),
-        },
+    console.log({
+      ...data,
+      catalogData: {
+        selectedProducts: selectedProducts,
+        filters: filters,
       },
-      "Complete form data with catalog selections"
-    );
-    console.log("Selected Receptionists:", data.selectedReceptionists);
+    });
   };
 
   const validateStep = async (stepFields: string[]) => {
@@ -130,42 +120,6 @@ const CreateNewCampaign = () => {
       stepFields as (keyof z.infer<typeof formSchema>)[]
     );
     return result;
-  };
-
-  const handleFilter = (filters: Filters) => {
-    const { category, minPrice, maxPrice, sortBy } = filters;
-
-    const filtered = products.filter((product) => {
-      return (
-        (category === "all" || category === ""
-          ? true
-          : product.category === category) &&
-        product.price >= minPrice &&
-        product.price <= maxPrice
-      );
-    });
-
-    if (sortBy === "priceLowToHigh") {
-      filtered.sort((a, b) => a.price - b.price);
-    } else if (sortBy === "priceHighToLow") {
-      filtered.sort((a, b) => b.price - a.price);
-    } else if (sortBy === "popularity") {
-      filtered.sort((a, b) => b.popularity - a.popularity);
-    }
-
-    setFilteredProducts(filtered);
-    form.setValue("catalogFilters", filters);
-  };
-
-  const toggleSelectProduct = (productId: string) => {
-    setSelectedProducts((prevSelected) => {
-      const newSelection = prevSelected.includes(productId)
-        ? prevSelected.filter((id) => id !== productId)
-        : [...prevSelected, productId];
-
-      form.setValue("catalogSelectedProducts", newSelection);
-      return newSelection;
-    });
   };
 
   const stepFields = useMemo(
@@ -200,28 +154,20 @@ const CreateNewCampaign = () => {
     [distributionType, rewardType]
   );
 
-  const debouncedSearchTerm = useDebounce(searchRecipients, 300);
-
-  const filteredRecipients = useMemo(() => {
-    const term = debouncedSearchTerm.trim().toLowerCase();
-    if (!term) return recipients;
-
-    return recipients.filter((r) => {
-      return (
-        r.name.toLowerCase().includes(term) ||
-        r.email.toLowerCase().includes(term) ||
-        r.phone.includes(term) ||
-        r.department.toLowerCase().includes(term)
-      );
-    });
-  }, [debouncedSearchTerm]);
-
   const { isLoading, isError } = useQuery({
     queryKey: ["events", forWho],
     queryFn: () => loadEvents(forWho),
     enabled: !!forWho,
     staleTime: 5 * 60 * 1000,
   });
+
+  const handleFilter = (newFilters: Filters) => {
+    applyFilters(newFilters);
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
   return (
     <section className="flex justify-center my-7 flex-col gap-y-5 items-center">
       <div className="md:max-w-[80%] w-full"></div>
@@ -378,68 +324,14 @@ const CreateNewCampaign = () => {
                     placeholder="Search by name, email, phone or department"
                   />
 
-                  {/* Recipients Table */}
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Select
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Name
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Email
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Phone
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Department
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredRecipients.length > 0 ? (
-                          filteredRecipients.map((person) => (
-                            <tr key={person.id}>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <CustomFormField
-                                  control={form.control}
-                                  name="selectedReceptionists"
-                                  fieldType={FormFieldType.CHECKBOX}
-                                  checkboxValue={person.id}
-                                  label={person.name}
-                                />
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {person.name}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {person.email}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {person.phone}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {person.department}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={5}
-                              className="px-6 py-4 text-center text-sm text-gray-500"
-                            >
-                              No recipients found matching your search
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                  <CustomFormField
+                    control={form.control}
+                    name="selectedReceptionists"
+                    fieldType={FormFieldType.TABLE}
+                    label="Select Recipients"
+                    recipients={recipients}
+                    searchTerm={form.watch("searchRecipients")}
+                  />
                 </div>
                 <ReceptionistDialog forWho={forWho} />
               </>
@@ -582,19 +474,25 @@ const CreateNewCampaign = () => {
 
         {distributionType !== "bulk_order" && (
           <>
-            <WizardStep step={6}>
+            <WizardStep
+              step={6}
+              validator={async () => {
+                form.setValue("catalogData.selectedProducts", selectedProducts);
+                form.setValue("catalogData.filters", filters);
+                return await form.trigger("catalogData.selectedProducts");
+              }}
+              fieldNames={["catalogData.selectedProducts"]}
+            >
               <h2 className="my-4 text-center text-3xl">Customize Catalogue</h2>
 
               <div className="space-y-6">
-                <div className="grid grid-cols-5 gap-3">
+                {/* Filter Controls */}
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                  {/* Category Filter */}
                   <Select
-                    value={form.watch("catalogFilters.category")}
+                    value={filters.category}
                     onValueChange={(value) => {
-                      const newFilters = {
-                        ...form.watch("catalogFilters"),
-                        category: value,
-                      };
-                      handleFilter(newFilters);
+                      handleFilter({ ...filters, category: value });
                     }}
                   >
                     <SelectTrigger className="w-full">
@@ -605,42 +503,48 @@ const CreateNewCampaign = () => {
                       <SelectItem value="electronics">Electronics</SelectItem>
                       <SelectItem value="apparel">Apparel</SelectItem>
                       <SelectItem value="food">Food</SelectItem>
+                      <SelectItem value="home">Home & Kitchen</SelectItem>
                     </SelectContent>
                   </Select>
 
+                  {/* Price Range Filters */}
                   <Input
                     type="number"
                     placeholder="Min Price"
-                    value={form.watch("catalogFilters.minPrice")}
+                    value={filters.minPrice}
                     onChange={(e) => {
-                      const newFilters = {
-                        ...form.watch("catalogFilters"),
+                      handleFilter({
+                        ...filters,
                         minPrice: Number(e.target.value),
-                      };
-                      handleFilter(newFilters);
+                      });
                     }}
+                    min={0}
                   />
+
                   <Input
                     type="number"
                     placeholder="Max Price"
-                    value={form.watch("catalogFilters.maxPrice")}
+                    value={filters.maxPrice}
                     onChange={(e) => {
-                      const newFilters = {
-                        ...form.watch("catalogFilters"),
+                      handleFilter({
+                        ...filters,
                         maxPrice: Number(e.target.value),
-                      };
-                      handleFilter(newFilters);
+                      });
                     }}
+                    min={filters.minPrice}
                   />
 
+                  {/* Sort By Filter */}
                   <Select
-                    value={form.watch("catalogFilters.sortBy")}
+                    value={filters.sortBy}
                     onValueChange={(value) => {
-                      const newFilters = {
-                        ...form.watch("catalogFilters"),
-                        sortBy: value as Filters["sortBy"],
-                      };
-                      handleFilter(newFilters);
+                      handleFilter({
+                        ...filters,
+                        sortBy: value as
+                          | "priceLowToHigh"
+                          | "priceHighToLow"
+                          | "popularity",
+                      });
                     }}
                   >
                     <SelectTrigger className="w-full">
@@ -653,85 +557,153 @@ const CreateNewCampaign = () => {
                       <SelectItem value="priceHighToLow">
                         Price: High to Low
                       </SelectItem>
-                      <SelectItem value="popularity">Popularity</SelectItem>
+                      <SelectItem value="popularity">Most Popular</SelectItem>
                     </SelectContent>
                   </Select>
 
-                  <Button
-                    onClick={() => handleFilter(form.watch("catalogFilters"))}
-                  >
-                    Apply Filters
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleFilter(filters)}
+                      className="flex-1"
+                    >
+                      Apply Filters
+                    </Button>
+                    <Button variant="outline" onClick={() => resetFilters()}>
+                      Reset
+                    </Button>
+                  </div>
                 </div>
 
-                {/* Product List */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {filteredProducts.map((product) => {
-                    const isSelected = selectedProducts.includes(product.id);
-                    return (
-                      <Card
-                        key={product.id}
-                        className={`hover:shadow-lg transition-shadow relative ${
-                          isSelected ? "border-2 border-blue-500" : ""
-                        }`}
+                {/* Selected Products Summary */}
+                {selectedProducts.length > 0 && (
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-medium">
+                        Selected Items: {selectedProducts.length}
+                      </h3>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        onClick={() => clearSelectedProducts()}
                       >
-                        <CardContent className="p-4">
-                          <img
-                            src={product.imageUrl || "/placeholder.svg"}
-                            alt={product.name}
-                            className="w-full h-48 object-cover rounded-md"
-                          />
-                          <h3 className="text-lg font-semibold mt-2">
-                            {product.name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {product.category}
-                          </p>
-                          <p className="text-lg font-bold text-gray-800">
-                            ${product.price}
-                          </p>
-                        </CardContent>
-                        <CardFooter className="flex justify-between items-center">
-                          <Button
-                            variant="outline"
-                            onClick={() => toggleSelectProduct(product.id)}
+                        Clear All
+                      </Button>
+                    </div>
+                    <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
+                      {filteredProducts
+                        .filter((product) =>
+                          selectedProducts.includes(product.id)
+                        )
+                        .map((product) => (
+                          <div
+                            key={product.id}
+                            className="flex items-center p-2 border rounded"
                           >
-                            {isSelected ? "Deselect" : "Select"}
-                          </Button>
-                          {isSelected && (
-                            <input
-                              type="checkbox"
-                              checked={true}
-                              readOnly
-                              className="w-5 h-5 text-blue-600"
+                            <img
+                              src={product.imageUrl || "/placeholder.svg"}
+                              alt={product.name}
+                              className="w-10 h-10 object-cover rounded mr-2"
                             />
-                          )}
-                        </CardFooter>
-                      </Card>
-                    );
-                  })}
-                </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">
+                                {product.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                ${product.price}
+                              </p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => toggleProductSelection(product.id)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
 
-                {/* Hidden form fields to store catalog data */}
-                <CustomFormField
-                  control={form.control}
-                  name="catalogSelectedProducts"
-                  fieldType={FormFieldType.INPUT}
-                  label=""
-                  placeholder=""
-                  inputType="hidden"
-                  classNames="invisible"
-                />
-                <CustomFormField
-                  control={form.control}
-                  name="catalogFilters"
-                  fieldType={FormFieldType.INPUT}
-                  label=""
-                  placeholder=""
-                  inputType="hidden"
-                  classNames="invisible"
-                />
+                {/* Product Grid */}
+                {filteredProducts.length === 0 ? (
+                  <div className="text-center py-10">
+                    <p className="text-gray-500">
+                      No products match your filters
+                    </p>
+                    <Button
+                      variant="link"
+                      onClick={() => resetFilters()}
+                      className="mt-2"
+                    >
+                      Reset filters
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {filteredProducts.map((product) => {
+                      const isSelected = selectedProducts.includes(product.id);
+                      return (
+                        <Card
+                          key={product.id}
+                          className={`hover:shadow-lg transition-shadow relative ${
+                            isSelected ? "border-2 border-primary" : ""
+                          }`}
+                        >
+                          <CardContent className="p-4">
+                            <div className="relative aspect-square mb-3">
+                              <img
+                                src={product.imageUrl || "/placeholder.svg"}
+                                alt={product.name}
+                                className="w-full h-full object-cover rounded-md"
+                              />
+                              {isSelected && (
+                                <div className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full">
+                                  <Check className="h-4 w-4" />
+                                </div>
+                              )}
+                            </div>
+                            <h3 className="text-lg font-semibold line-clamp-1">
+                              {product.name}
+                            </h3>
+                            <div className="flex justify-between items-center mt-2">
+                              <span className="text-sm text-gray-600 capitalize">
+                                {product.category}
+                              </span>
+                              <span className="text-lg font-bold">
+                                ${product.price.toFixed(2)}
+                              </span>
+                            </div>
+                            {product.popularity > 7 && (
+                              <div className="mt-2 flex items-center">
+                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                <span className="text-xs ml-1">Popular</span>
+                              </div>
+                            )}
+                          </CardContent>
+                          <CardFooter className="flex justify-between p-4 pt-0">
+                            <Button
+                              variant={isSelected ? "default" : "outline"}
+                              className="w-full"
+                              onClick={() => toggleProductSelection(product.id)}
+                            >
+                              {isSelected ? "Selected" : "Select"}
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
+              <CustomFormField
+                control={form.control}
+                name="catalogData.selectedProducts"
+                fieldType={FormFieldType.INPUT}
+                label=""
+                inputType="hidden"
+              />
             </WizardStep>
 
             <WizardStep step={7}>

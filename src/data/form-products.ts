@@ -12,7 +12,7 @@ export interface Product {
 
 
 
-export const products: Product[] = [
+export const DemoPoducts: Product[] = [
     {
         id: "1",
         name: "Laptop",
