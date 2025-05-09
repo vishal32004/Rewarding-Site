@@ -5,9 +5,9 @@ export const formSchema = z
             message: "Campaign name is required",
         }),
         description: z.string(),
-        forWho: z.number(),
-        event: z.string().min(2, { message: "Please Select at least one Option" }),
-        otherEvent: z.string(),
+        forWho: z.number().min(1, { message: "Please Select at least one option" }),
+        event: z.string().min(1, { message: "Please Select At Least One Option" }),
+        otherEvent: z.string().min(1, { message: 'Or Write A Custom Event Name' }),
         searchRecipients: z.string(),
         selectedReceptionists: z.number().array().nonempty(),
         distributionType: z
@@ -92,4 +92,4 @@ export const formSchema = z
             message: "Event Address & Date are required",
             path: ["eventAddress", "eventDate"],
         }
-    );
+    )

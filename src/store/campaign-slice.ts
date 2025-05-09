@@ -1,11 +1,11 @@
 import { EmailTemplate, LandingPageTemplate } from "@/@types/Template.types";
 import { StateCreator } from "zustand";
-import axios from "axios";
+// import axios from "axios";
 import { Filters, Product } from "@/@types/Catalog.types";
 import { DemoPoducts } from "@/data/form-products";
 
 export interface CampaignFormStore {
-    recipientType: Array<{ label: string; value: string }>;
+    recipientType: Array<{ label: string; value: number }>;
     events: Array<{ label: string; value: string }>;
     recipient: string[];
     emailTemplates: EmailTemplate[];
@@ -18,8 +18,8 @@ export interface CampaignFormStore {
     // Loading methods
     loadRecepientType: () => Promise<boolean>;
     loadEvents: (category: number) => Promise<boolean>;
-    loadEmailTemplate: (category: string) => boolean;
-    loadLandingPageTemplate: (category: string) => boolean;
+    loadEmailTemplate: (category: number) => boolean;
+    loadLandingPageTemplate: (category: number) => boolean;
     loadProducts: () => Promise<boolean>;
 
     // Filter methods
@@ -61,38 +61,58 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
     ...initialState,
 
     loadRecepientType: async () => {
-        // fetch the data
+        const demoData = [
+            {
+                label: "Internal Team",
+                value: 1,
+            },
+            {
+                label: "External Client",
+                value: 2,
+            },
+            {
+                label: "Channel Partners",
+                value: 3,
+            },
+            {
+                label: "Auto Dealers",
+                value: 4,
+            },
+            {
+                label: "Real Estate",
+                value: 5,
+            },
+        ]
+
+        set({ recipientType: demoData })
         return true;
     },
 
     loadEvents: async (categoryId: number) => {
-        try {
-            const response = await axios.post("http://localhost:3000/api/events", {
-                recipient_type_id: categoryId,
-            });
+        console.log(categoryId)
+        const demoEvents = [{
+            label: "Demo 1",
+            value: '1',
+        },
+        {
+            label: "Demo 2",
+            value: '2',
+        },
+        {
+            label: "Demo 3",
+            value: '3',
+        },]
 
-            const data = response.data;
-            console.log(data, "Data");
-            const events = data.map((event: any) => ({
-                label: event.name,
-                value: event.name,
-            }));
-            set({ events });
-            return true;
-        } catch (error) {
-            console.error("Failed to load events:", error);
-            return false;
-        }
+        set({ events: demoEvents })
+        return true
     },
 
     loadProducts: async () => {
         try {
             // In a real app, you would fetch this from an API
-
-
             set({
                 products: DemoPoducts,
-                filteredProducts: DemoPoducts, // Initially show all products
+                filteredProducts: DemoPoducts,
             });
             return true;
         } catch (error) {
@@ -105,7 +125,6 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
         const { filters, products } = get();
         const updatedFilters = { ...filters, ...newFilters };
 
-        // Apply filtering
         const filtered = products.filter((product) => {
             return (
                 (updatedFilters.category === "all" || product.category === updatedFilters.category) &&
@@ -113,6 +132,7 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
                 product.price <= updatedFilters.maxPrice
             );
         });
+        
 
         // Apply sorting
         if (updatedFilters.sortBy === "priceLowToHigh") {
@@ -150,7 +170,7 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
         set({ selectedProducts: [] });
     },
 
-    loadEmailTemplate: (category: string) => {
+    loadEmailTemplate: (category: number) => {
         console.log(category);
         const emailTemplates = [{
             id: "1",
@@ -165,7 +185,7 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
         return true;
     },
 
-    loadLandingPageTemplate: (category: string) => {
+    loadLandingPageTemplate: (category: number) => {
         console.log(category);
         const landingPageTemplates = [{
             id: "registration",

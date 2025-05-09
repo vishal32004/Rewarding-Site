@@ -17,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { calculateTotal } from "@/lib/helper";
 // import Payment from "@/components/Payment";
-import { templates } from "@/data/email-templates";
 import { recipients } from "@/data/recipients";
 import { formSchema } from "@/@types/CampaignFrom.schema";
 import { useEffect, useMemo } from "react";
@@ -34,7 +33,6 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import ReceptionistDialog from "@/components/Receptionist/receptioinst-dialog";
 import { useQuery } from "@tanstack/react-query";
-import { Filters } from "@/@types/Catalog.types";
 const defaultValues = {
   campaignName: "",
   description: "",
@@ -69,16 +67,22 @@ const defaultValues = {
 
 const CreateNewCampaign = () => {
   const {
-    loadEvents,
     events,
     filteredProducts,
-    loadProducts,
     selectedProducts,
     filters,
+    landingPageTemplates,
+    emailTemplates,
+    recipientType,
+    loadEvents,
+    loadProducts,
     applyFilters,
     toggleProductSelection,
     resetFilters,
     clearSelectedProducts,
+    loadLandingPageTemplate,
+    loadEmailTemplate,
+    loadRecepientType,
   } = useCampaignFormStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -126,7 +130,7 @@ const CreateNewCampaign = () => {
     () => ({
       0: ["campaignName"],
       1: ["forWho"],
-      2: ["EventMainCategory"],
+      2: ["event", "otherEvent"],
       3: ["distributionType"],
       4: [
         distributionType === "bulk_order"
@@ -144,12 +148,6 @@ const CreateNewCampaign = () => {
         return fields;
       })(),
       8: ["emailTemplate"],
-      10: [
-        "startDate",
-        "endDate",
-        "sendReminderAfterInitialGift",
-        "sendReminderBeforeExpiration",
-      ],
     }),
     [distributionType, rewardType]
   );
@@ -161,13 +159,17 @@ const CreateNewCampaign = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const handleFilter = (newFilters: Filters) => {
-    applyFilters(newFilters);
-  };
-
   useEffect(() => {
     loadProducts();
-  }, [loadProducts]);
+    loadLandingPageTemplate(1);
+    loadEmailTemplate(1);
+    loadRecepientType();
+  }, [
+    loadProducts,
+    loadLandingPageTemplate,
+    loadEmailTemplate,
+    loadRecepientType,
+  ]);
   return (
     <section className="flex justify-center my-7 flex-col gap-y-5 items-center">
       <div className="md:max-w-[80%] w-full"></div>
@@ -215,28 +217,7 @@ const CreateNewCampaign = () => {
               fieldType={FormFieldType.RADIO}
               label="For"
               radioGridClass="grid-cols-4"
-              radioOptions={[
-                {
-                  label: "Internal Team",
-                  value: 1,
-                },
-                {
-                  label: "External Client",
-                  value: 2,
-                },
-                {
-                  label: "Channel Partners",
-                  value: 3,
-                },
-                {
-                  label: "Auto Dealers",
-                  value: 4,
-                },
-                {
-                  label: "Real Estate",
-                  value: 5,
-                },
-              ]}
+              radioOptions={recipientType}
             />
           </div>
         </WizardStep>
@@ -492,7 +473,7 @@ const CreateNewCampaign = () => {
                   <Select
                     value={filters.category}
                     onValueChange={(value) => {
-                      handleFilter({ ...filters, category: value });
+                      applyFilters({ ...filters, category: value });
                     }}
                   >
                     <SelectTrigger className="w-full">
@@ -513,7 +494,7 @@ const CreateNewCampaign = () => {
                     placeholder="Min Price"
                     value={filters.minPrice}
                     onChange={(e) => {
-                      handleFilter({
+                      applyFilters({
                         ...filters,
                         minPrice: Number(e.target.value),
                       });
@@ -526,7 +507,7 @@ const CreateNewCampaign = () => {
                     placeholder="Max Price"
                     value={filters.maxPrice}
                     onChange={(e) => {
-                      handleFilter({
+                      applyFilters({
                         ...filters,
                         maxPrice: Number(e.target.value),
                       });
@@ -538,7 +519,7 @@ const CreateNewCampaign = () => {
                   <Select
                     value={filters.sortBy}
                     onValueChange={(value) => {
-                      handleFilter({
+                      applyFilters({
                         ...filters,
                         sortBy: value as
                           | "priceLowToHigh"
@@ -563,12 +544,6 @@ const CreateNewCampaign = () => {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button
-                      onClick={() => handleFilter(filters)}
-                      className="flex-1"
-                    >
-                      Apply Filters
-                    </Button>
                     <Button variant="outline" onClick={() => resetFilters()}>
                       Reset
                     </Button>
@@ -716,21 +691,21 @@ const CreateNewCampaign = () => {
                   control={form.control}
                   name="landingPageTemplate"
                   fieldType={FormFieldType.RADIO_CARD}
-                  radioCardoptions={templates.slice(0, 6).map((template) => ({
+                  radioCardoptions={landingPageTemplates.map((template) => ({
                     value: template.id,
                     content: (
                       <div className="bg-white rounded-lg overflow-hidden shadow-sm group relative">
                         <div className="relative h-40">
                           <img
-                            src={template.imageUrl || "/placeholder.svg"}
-                            alt={template.title}
+                            src={template.thumbnail || "/placeholder.svg"}
+                            alt={template.name}
                             className="object-cover w-full max-h-full"
                           />
                         </div>
                         <div className="p-2 text-center">
-                          <h3 className="text-sm">{template.title}</h3>
+                          <h3 className="text-sm">{template.name}</h3>
                           <p className="text-xs text-gray-500">
-                            {template.subCategory}
+                            {template.category}
                           </p>
                         </div>
                       </div>
@@ -749,7 +724,7 @@ const CreateNewCampaign = () => {
                   control={form.control}
                   name="emailTemplate"
                   fieldType={FormFieldType.RADIO_CARD}
-                  radioCardoptions={templates.slice(0, 6).map((template) => ({
+                  radioCardoptions={emailTemplates.map((template) => ({
                     value: template.id,
                     content: (
                       <div className="bg-white rounded-lg overflow-hidden shadow-sm group relative">
