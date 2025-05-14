@@ -3,7 +3,7 @@ import type { UseFormReturn, FieldValues, Path } from "react-hook-form";
 import type { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { Wizard, WizardButtons, useWizard } from "@/components/Form/wizard";
+import { Wizard, WizardButtons, WizardProgress, useWizard } from "@/components/Form/wizard";
 
 interface WizardFormProps<T extends z.ZodType> {
   onSubmit: (values: z.infer<T>) => void;
@@ -29,6 +29,7 @@ export function WizardForm<T extends z.ZodType>({
             form={form}
             stepFields={stepFields}
           >
+            <WizardProgress className="mb-8" />
             {children}
           </MemoizedWizardFormContent>
         </Wizard>

@@ -1,27 +1,12 @@
-import { EmailTemplate, LandingPageTemplate } from "@/@types/Template.types";
 import { StateCreator } from "zustand";
 // import axios from "axios";
 import { Filters, Product } from "@/@types/Catalog.types";
-import { DemoPoducts } from "@/data/form-products";
 
 export interface CampaignFormStore {
-    recipientType: Array<{ label: string; value: number }>;
-    events: Array<{ label: string; value: string }>;
-    recipient: string[];
-    emailTemplates: EmailTemplate[];
-    landingPageTemplates: LandingPageTemplate[];
     products: Product[];
     filteredProducts: Product[];
     selectedProducts: string[];
     filters: Filters;
-
-    // Loading methods
-    loadRecepientType: () => Promise<boolean>;
-    loadEvents: (category: number) => Promise<boolean>;
-    loadEmailTemplate: (category: number) => boolean;
-    loadLandingPageTemplate: (category: number) => boolean;
-    loadProducts: () => Promise<boolean>;
-
     // Filter methods
     applyFilters: (filters: Partial<Filters>) => void;
     resetFilters: () => void;
@@ -31,21 +16,11 @@ export interface CampaignFormStore {
 
 const initialState: Omit<
     CampaignFormStore,
-    | 'loadEvents'
-    | 'loadEmailTemplate'
-    | 'loadLandingPageTemplate'
-    | 'loadRecepientType'
-    | 'loadProducts'
     | 'applyFilters'
     | 'resetFilters'
     | 'toggleProductSelection'
     | 'clearSelectedProducts'
 > = {
-    recipientType: [],
-    events: [],
-    recipient: [],
-    emailTemplates: [],
-    landingPageTemplates: [],
     products: [],
     filteredProducts: [],
     selectedProducts: [],
@@ -59,68 +34,6 @@ const initialState: Omit<
 
 export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, get) => ({
     ...initialState,
-
-    loadRecepientType: async () => {
-        const demoData = [
-            {
-                label: "Internal Team",
-                value: 1,
-            },
-            {
-                label: "External Client",
-                value: 2,
-            },
-            {
-                label: "Channel Partners",
-                value: 3,
-            },
-            {
-                label: "Auto Dealers",
-                value: 4,
-            },
-            {
-                label: "Real Estate",
-                value: 5,
-            },
-        ]
-
-        set({ recipientType: demoData })
-        return true;
-    },
-
-    loadEvents: async (categoryId: number) => {
-        console.log(categoryId)
-        const demoEvents = [{
-            label: "Demo 1",
-            value: '1',
-        },
-        {
-            label: "Demo 2",
-            value: '2',
-        },
-        {
-            label: "Demo 3",
-            value: '3',
-        },]
-
-        set({ events: demoEvents })
-        return true
-    },
-
-    loadProducts: async () => {
-        try {
-            // In a real app, you would fetch this from an API
-            set({
-                products: DemoPoducts,
-                filteredProducts: DemoPoducts,
-            });
-            return true;
-        } catch (error) {
-            console.error("Failed to load products:", error);
-            return false;
-        }
-    },
-
     applyFilters: (newFilters: Partial<Filters>) => {
         const { filters, products } = get();
         const updatedFilters = { ...filters, ...newFilters };
@@ -132,7 +45,7 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
                 product.price <= updatedFilters.maxPrice
             );
         });
-        
+
 
         // Apply sorting
         if (updatedFilters.sortBy === "priceLowToHigh") {
@@ -168,49 +81,5 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
 
     clearSelectedProducts: () => {
         set({ selectedProducts: [] });
-    },
-
-    loadEmailTemplate: (category: number) => {
-        console.log(category);
-        const emailTemplates = [{
-            id: "1",
-            value: "1",
-            title: "Birthday-1",
-            category: "Birthday",
-            subCategory: "Personal",
-            imageUrl: "images/bbanner.webp",
-            content: "Happy Birthday! Wishing you a fantastic day filled with joy and celebration.",
-        }];
-        set({ emailTemplates });
-        return true;
-    },
-
-    loadLandingPageTemplate: (category: number) => {
-        console.log(category);
-        const landingPageTemplates = [{
-            id: "registration",
-            name: "Registration Thank You",
-            category: "onboarding",
-            thumbnail: "/placeholder.svg?height=200&width=300",
-            elements: {
-                logo: "/placeholder.svg?height=40&width=120",
-                title: "Thank you for registering!",
-                description: "We have a little something for you as a token of appreciation.",
-                buttonText: "Claim your reward",
-                buttonLink: "/claim",
-                bannerImage:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/350c375-Screenshot_2024-05-13_at_6.27.57_PM-KsbDgU7JZ7Qc6WfKoSYk1Tk42EFdgq.png",
-                footerText: "How to redeem?",
-                textColor: "dark",
-                buttonStyle: "primary",
-                buttonSize: "default",
-                textAlignment: "center",
-                contentSpacing: "default",
-                animation: "none",
-                overlay: "none",
-            },
-        }];
-        set({ landingPageTemplates });
-        return true;
     },
 });

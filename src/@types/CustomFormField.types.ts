@@ -10,5 +10,6 @@ export enum FormFieldType {
     QUANTITY_CONTROLLER = "quantity_controller",
     CHECKBOX_GROUP = "checkbox_group",
     RADIO_CARD = "radio_card",
-    TABLE = "table"
+    TABLE = "table",
+    ACCORDION_RADIO = "accordion_radio",
 }

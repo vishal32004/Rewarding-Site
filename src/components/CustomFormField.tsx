@@ -43,6 +43,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Label } from "@/components/ui/label";
 
 export type RadioOptionType = {
   label: string;
@@ -122,6 +129,12 @@ interface TableFieldProps extends BaseFieldProps {
   searchTerm?: string;
 }
 
+interface AccordionRadioFieldProps extends BaseFieldProps {
+  label?: string;
+  accordionValue: string;
+  radioOptions?: RadioOptionType[];
+}
+
 export interface CustomFormFieldProps<T extends FieldValues> {
   control: Control<T>;
   fieldType: FormFieldType;
@@ -145,6 +158,7 @@ export interface CustomFormFieldProps<T extends FieldValues> {
   radioCardoptions?: RadioCardOptionType[];
   recipients?: RecipientType[];
   searchTerm?: string;
+  accordionValue?: string;
 }
 
 interface RenderFieldProps<T extends FieldValues> {
@@ -287,7 +301,7 @@ const RadioField = memo(
                 className="hidden"
               />
             </FormControl>
-            <FormLabel className="font-normal text-center text-md h-full p-4 border rounded-lg cursor-pointer hover:bg-gray-100 flex flex-col items-center justify-center w-full">
+            <FormLabel className="font-normal text-center text-md h-full p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-100 flex flex-col items-center justify-center w-full">
               {option.icon && <option.icon />}
               {option.label}
             </FormLabel>
@@ -445,6 +459,45 @@ const RadioCardField = memo(
   )
 );
 
+const AccordionRadioField = memo(
+  ({
+    field,
+    label,
+    accordionValue,
+    radioOptions,
+  }: AccordionRadioFieldProps) => (
+    <Accordion type="single" collapsible className="w-full border rounded-lg">
+      <AccordionItem
+        value={accordionValue?.toString() || ""}
+        className="border-b-0"
+      >
+        <AccordionTrigger className="px-4 hover:no-underline [&[data-state=open]]:bg-gray-50 [&[data-state=open]]:font-semibold">
+          {label}
+        </AccordionTrigger>
+        <AccordionContent className="px-4 pb-4 pt-0">
+          <RadioGroup
+            value={field.value?.toString() || ""}
+            onValueChange={field.onChange}
+            className="space-y-2"
+          >
+            {radioOptions?.map((option) => (
+              <div key={option.value} className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value={option.value.toString()}
+                  id={`${field.name}-${option.value}`}
+                />
+                <Label htmlFor={`${field.name}-${option.value}`}>
+                  {option.label}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  )
+);
+
 const fieldComponents = {
   [FormFieldType.INPUT]: InputField,
   [FormFieldType.SELECT]: SelectField,
@@ -456,6 +509,7 @@ const fieldComponents = {
   [FormFieldType.QUANTITY_CONTROLLER]: QuantityField,
   [FormFieldType.RADIO_CARD]: RadioCardField,
   [FormFieldType.TABLE]: TableField,
+  [FormFieldType.ACCORDION_RADIO]: AccordionRadioField,
 };
 
 function RenderField<T extends FieldValues>({

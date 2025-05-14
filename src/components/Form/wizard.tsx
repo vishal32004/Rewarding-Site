@@ -1,6 +1,7 @@
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 interface WizardContextValue {
   currentStep: number;
@@ -260,6 +261,61 @@ function WizardNavigation({ className }: WizardNavigationProps) {
     </div>
   );
 }
+
+interface WizardProgressProps {
+  className?: string;
+}
+function WizardProgress({ className }: WizardProgressProps) {
+  const { currentStep, visibleSteps, goToStep } = useWizard();
+
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-center space-x-2 my-4",
+        className
+      )}
+    >
+      {visibleSteps.map((step, index) => {
+        const isActive = currentStep === step;
+        const isCompleted =
+          visibleSteps.indexOf(currentStep) > visibleSteps.indexOf(step);
+
+        return (
+          <div key={step} className="flex items-center">
+            {index > 0 && (
+              <div
+                className={cn(
+                  "h-0.5 w-10",
+                  visibleSteps.indexOf(currentStep) >= index
+                    ? "bg-primary"
+                    : "bg-muted"
+                )}
+              />
+            )}
+            <button
+              type="button"
+              onClick={() => goToStep(step)}
+              className={cn(
+                "flex h-8 w-8 items-center justify-center rounded-full border transition-colors",
+                isActive && "border-primary bg-primary text-primary-foreground",
+                isCompleted && "border-primary bg-primary/20 text-primary",
+                !isActive && !isCompleted && "border-muted bg-background"
+              )}
+              aria-label={`Go to step ${index + 1}`}
+            >
+              {isCompleted ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <span className="text-sm font-medium">{index + 1}</span>
+              )}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 interface WizardButtonsProps {
   className?: string;
   onComplete?: (visibleSteps: number[]) => void;
@@ -310,29 +366,29 @@ function WizardButtons({
   };
 
   return (
-    <div className={cn("flex justify-center mt-8 gap-5", className)}>
-      <button
+    <div className={cn("flex justify-end mt-8 gap-5", className)}>
+      <Button
         type="button"
         onClick={prevStep}
         className={cn(
-          "flex items-center gap-1 rounded-md px-4 py-2 text-sm font-medium transition-colors",
-          isFirstStep ? "hidden" : "bg-muted hover:bg-muted/80"
+          "flex items-center gap-1 bg-transparent shadow-none rounded-md px-4 py-2 text-sm font-medium transition-colors",
+          isFirstStep ? "hidden" : "text-black hover:bg-transparent hover:text-primary"
         )}
         disabled={isFirstStep || isLoading}
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ArrowLeft className="h-4 w-4" />
         {prevText}
-      </button>
+      </Button>
 
-      <button
+      <Button
         type="button"
         onClick={handleNext}
         className="flex items-center gap-1 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
         disabled={isLoading}
       >
         {isLoading ? "Loading..." : isLastStep ? completeText : nextText}
-        {!isLastStep && !isLoading && <ChevronRight className="h-4 w-4" />}
-      </button>
+        {!isLastStep && !isLoading}
+      </Button>
     </div>
   );
 }
@@ -341,7 +397,7 @@ export {
   Wizard,
   WizardStep,
   WizardNavigation,
-  // WizardProgress,
+  WizardProgress,
   WizardButtons,
   useWizard,
 };
