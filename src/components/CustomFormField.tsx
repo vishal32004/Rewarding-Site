@@ -11,6 +11,7 @@ import {
   ControllerRenderProps,
   FieldValues,
   Path,
+  FieldPath,
 } from "react-hook-form";
 import React, { memo } from "react";
 import {
@@ -75,61 +76,65 @@ export type RecipientType = {
   department: string;
 };
 
-interface BaseFieldProps {
-  field: ControllerRenderProps<any, any>;
+interface BaseFieldProps<T extends FieldValues> {
+  field: ControllerRenderProps<T, FieldPath<T>>;
 }
 
-interface InputFieldProps extends BaseFieldProps {
+interface InputFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   placeholder?: string;
   inputType?: string;
   classNames?: string;
+  disabled?: boolean;
 }
 
-interface SelectFieldProps extends BaseFieldProps {
+interface SelectFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   placeholder?: string;
   children?: React.ReactNode;
 }
 
-interface DatePickerFieldProps extends BaseFieldProps {
+interface DatePickerFieldProps<T extends FieldValues>
+  extends BaseFieldProps<T> {
   multipleDates?: boolean;
+  dateFormat?: string;
 }
 
-interface CheckboxFieldProps extends BaseFieldProps {
+interface CheckboxFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   name: string;
   label?: string;
   checkboxValue?: number;
 }
 
-interface TextareaFieldProps extends BaseFieldProps {
+interface TextareaFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   placeholder?: string;
   disabled?: boolean;
 }
 
-interface RadioFieldProps extends BaseFieldProps {
+interface RadioFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   radioOptions?: RadioOptionType[];
   radioGridClass?: string;
 }
 
-interface ComboboxFieldProps extends BaseFieldProps {
+interface ComboboxFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   comboboxOption?: ComboboxOptionType[];
   placeholder?: string;
 }
 
-interface QuantityFieldProps extends BaseFieldProps {
+interface QuantityFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   min?: number;
   max?: number;
 }
 
-interface RadioCardFieldProps extends BaseFieldProps {
+interface RadioCardFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   radioCardoptions?: RadioCardOptionType[];
 }
 
-interface TableFieldProps extends BaseFieldProps {
+interface TableFieldProps<T extends FieldValues> extends BaseFieldProps<T> {
   recipients?: RecipientType[];
   searchTerm?: string;
 }
 
-interface AccordionRadioFieldProps extends BaseFieldProps {
+interface AccordionRadioFieldProps<T extends FieldValues>
+  extends BaseFieldProps<T> {
   label?: string;
   accordionValue: string;
   radioOptions?: RadioOptionType[];
@@ -166,243 +171,261 @@ interface RenderFieldProps<T extends FieldValues> {
   props: CustomFormFieldProps<T>;
 }
 
-const InputField = memo(
-  ({ field, placeholder, inputType, classNames }: InputFieldProps) => (
-    <div
-      className={cn(
-        "flex rounded-md border border-dark-500 bg-dark-400",
-        classNames
-      )}
-    >
-      <FormControl>
-        <Input
-          placeholder={placeholder}
-          {...field}
-          className="shad-input border-0"
-          type={inputType || "text"}
-        />
-      </FormControl>
-    </div>
-  )
-);
-
-const SelectField = memo(
-  ({ field, placeholder, children }: SelectFieldProps) => (
+const InputField = <T extends FieldValues>({
+  field,
+  placeholder,
+  inputType,
+  classNames,
+  disabled,
+}: InputFieldProps<T>) => (
+  <div
+    className={cn(
+      "flex rounded-md border border-dark-500 bg-dark-400",
+      classNames
+    )}
+  >
     <FormControl>
-      <Select onValueChange={field.onChange} defaultValue={field.value}>
-        <FormControl>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder={placeholder} />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>{children}</SelectContent>
-      </Select>
-    </FormControl>
-  )
-);
-
-const DatePickerField = memo(
-  ({ field, multipleDates }: DatePickerFieldProps) => (
-    <Popover>
-      <PopoverTrigger asChild>
-        <FormControl>
-          <Button
-            variant="outline"
-            className={cn(
-              "w-full pl-3 text-left font-normal",
-              !field.value && "text-muted-foreground"
-            )}
-          >
-            {renderDatePickerValue(field.value, multipleDates)}
-            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-          </Button>
-        </FormControl>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode={multipleDates ? "multiple" : "single"}
-          selected={field.value}
-          onSelect={field.onChange}
-          disabled={(date) =>
-            date > new Date() || date < new Date("1900-01-01")
-          }
-          initialFocus
-        />
-      </PopoverContent>
-    </Popover>
-  )
-);
-
-const CheckboxField = memo(
-  ({ field, name, label, checkboxValue }: CheckboxFieldProps) => (
-    <FormControl>
-      <div className="flex items-center gap-4">
-        <Checkbox
-          id={`${name}-${checkboxValue}`}
-          checked={
-            checkboxValue ? field.value?.includes(checkboxValue) : field.value
-          }
-          onCheckedChange={(checked) => {
-            if (checkboxValue !== undefined) {
-              if (checked) {
-                field.onChange([...(field.value || []), checkboxValue]);
-              } else {
-                field.onChange(
-                  field.value?.filter((v: number) => v !== checkboxValue) || []
-                );
-              }
-            } else {
-              field.onChange(checked);
-            }
-          }}
-        />
-        {label && (
-          <label
-            htmlFor={`${name}-${checkboxValue}`}
-            className="md:leading-none cursor-pointer text-sm font-medium text-dark-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            {label}
-          </label>
-        )}
-      </div>
-    </FormControl>
-  )
-);
-
-const TextareaField = memo(
-  ({ field, placeholder, disabled }: TextareaFieldProps) => (
-    <FormControl>
-      <Textarea
+      <Input
         placeholder={placeholder}
         {...field}
-        className="bg-dark-400 placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+        className="shad-input border-0"
+        type={inputType || "text"}
         disabled={disabled}
       />
     </FormControl>
-  )
+  </div>
 );
 
-const RadioField = memo(
-  ({ field, radioOptions, radioGridClass }: RadioFieldProps) => (
-    <FormControl>
-      <RadioGroup
-        onValueChange={field.onChange}
-        defaultValue={field.value}
-        className={cn("grid", radioGridClass)}
-      >
-        {radioOptions?.map((option: RadioOptionType) => (
-          <FormItem
-            className="flex items-center space-x-3 space-y-0 card-radio"
-            key={option.value}
-          >
-            <FormControl>
-              <RadioGroupItem
-                value={option.value as string}
-                className="hidden"
-              />
-            </FormControl>
-            <FormLabel className="font-normal text-center text-md h-full p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-100 flex flex-col items-center justify-center w-full">
-              {option.icon && <option.icon />}
-              {option.label}
-            </FormLabel>
-          </FormItem>
-        ))}
-      </RadioGroup>
-    </FormControl>
-  )
+const SelectField = <T extends FieldValues>({
+  field,
+  placeholder,
+  children,
+}: SelectFieldProps<T>) => (
+  <FormControl>
+    <Select onValueChange={field.onChange} defaultValue={field.value}>
+      <FormControl>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+      </FormControl>
+      <SelectContent>{children}</SelectContent>
+    </Select>
+  </FormControl>
 );
 
-const ComboboxField = memo(
-  ({ field, comboboxOption, placeholder }: ComboboxFieldProps) => (
-    <FormControl>
-      <Combobox
-        value={field.value}
-        onChange={field.onChange}
-        options={comboboxOption || []}
-        placeholder={placeholder}
-        searchPlaceholder="Search"
+const DatePickerField = <T extends FieldValues>({
+  field,
+  multipleDates,
+  dateFormat = "PPP",
+}: DatePickerFieldProps<T>) => (
+  <Popover>
+    <PopoverTrigger asChild>
+      <FormControl>
+        <Button
+          variant="outline"
+          className={cn(
+            "w-full pl-3 text-left font-normal",
+            !field.value && "text-muted-foreground"
+          )}
+        >
+          {renderDatePickerValue(field.value, multipleDates, dateFormat)}
+          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+        </Button>
+      </FormControl>
+    </PopoverTrigger>
+    <PopoverContent className="w-auto p-0" align="start">
+      <Calendar
+        mode={multipleDates ? "multiple" : "single"}
+        selected={field.value}
+        onSelect={field.onChange}
+        disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+        initialFocus
       />
-    </FormControl>
-  )
+    </PopoverContent>
+  </Popover>
 );
 
-const QuantityField = memo(
-  ({ field, min = 1, max = 99 }: QuantityFieldProps) => (
-    <FormControl>
-      <QuantityController
-        value={field.value || 1}
-        onIncrement={() => field.onChange(Math.min(field.value + 1, max))}
-        onDecrement={() => field.onChange(Math.max(field.value - 1, min))}
-        onChange={(value) => field.onChange(value)}
-        min={min}
-        max={max}
+const CheckboxField = <T extends FieldValues>({
+  field,
+  name,
+  label,
+  checkboxValue,
+}: CheckboxFieldProps<T>) => (
+  <FormControl>
+    <div className="flex items-center gap-4">
+      <Checkbox
+        id={`${name}-${checkboxValue}`}
+        checked={
+          checkboxValue ? field.value?.includes(checkboxValue) : field.value
+        }
+        onCheckedChange={(checked) => {
+          if (checkboxValue !== undefined) {
+            if (checked) {
+              field.onChange([...(field.value || []), checkboxValue]);
+            } else {
+              field.onChange(
+                field.value?.filter((v: number) => v !== checkboxValue) || []
+              );
+            }
+          } else {
+            field.onChange(checked);
+          }
+        }}
       />
-    </FormControl>
-  )
+      {label && (
+        <label
+          htmlFor={`${name}-${checkboxValue}`}
+          className="md:leading-none cursor-pointer text-sm font-medium text-dark-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {label}
+        </label>
+      )}
+    </div>
+  </FormControl>
 );
 
-const TableField = memo(
-  ({ field, recipients = [], searchTerm = "" }: TableFieldProps) => {
-    const filteredRecipients = recipients.filter(
-      (recipient) =>
-        recipient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipient.phone.includes(searchTerm) ||
-        recipient.department.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+const TextareaField = <T extends FieldValues>({
+  field,
+  placeholder,
+  disabled,
+}: TextareaFieldProps<T>) => (
+  <FormControl>
+    <Textarea
+      placeholder={placeholder}
+      {...field}
+      className="bg-dark-400 placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+      disabled={disabled}
+    />
+  </FormControl>
+);
 
-    return (
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Select</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Department</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredRecipients.length > 0 ? (
-              filteredRecipients.map((recipient) => (
-                <TableRow key={recipient.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={field.value?.includes(recipient.id)}
-                      onCheckedChange={(checked) => {
-                        const newValue = checked
-                          ? [...(field.value || []), recipient.id]
-                          : field.value?.filter(
-                              (id: number) => id !== recipient.id
-                            ) || [];
-                        field.onChange(newValue);
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>{recipient.name}</TableCell>
-                  <TableCell>{recipient.email}</TableCell>
-                  <TableCell>{recipient.phone}</TableCell>
-                  <TableCell>{recipient.department}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No results found
+const RadioField = <T extends FieldValues>({
+  field,
+  radioOptions = [],
+  radioGridClass,
+}: RadioFieldProps<T>) => (
+  <FormControl>
+    <RadioGroup
+      onValueChange={field.onChange}
+      defaultValue={field.value}
+      className={cn("grid", radioGridClass)}
+    >
+      {radioOptions.map((option: RadioOptionType) => (
+        <FormItem
+          className="flex items-center space-x-3 space-y-0 card-radio"
+          key={option.value}
+        >
+          <FormControl>
+            <RadioGroupItem value={option.value as string} className="hidden" />
+          </FormControl>
+          <FormLabel className="font-normal text-center text-md h-full p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-100 flex flex-col items-center justify-center w-full">
+            {option.icon && <option.icon />}
+            {option.label}
+          </FormLabel>
+        </FormItem>
+      ))}
+    </RadioGroup>
+  </FormControl>
+);
+
+const ComboboxField = <T extends FieldValues>({
+  field,
+  comboboxOption = [],
+  placeholder,
+}: ComboboxFieldProps<T>) => (
+  <FormControl>
+    <Combobox
+      value={field.value}
+      onChange={field.onChange}
+      options={comboboxOption}
+      placeholder={placeholder}
+      searchPlaceholder="Search"
+    />
+  </FormControl>
+);
+
+const QuantityField = <T extends FieldValues>({
+  field,
+  min = 1,
+  max = 99,
+}: QuantityFieldProps<T>) => (
+  <FormControl>
+    <QuantityController
+      value={field.value || 1}
+      onIncrement={() => field.onChange(Math.min(field.value + 1, max))}
+      onDecrement={() => field.onChange(Math.max(field.value - 1, min))}
+      onChange={(value) => field.onChange(value)}
+      min={min}
+      max={max}
+    />
+  </FormControl>
+);
+
+const TableField = <T extends FieldValues>({
+  field,
+  recipients = [],
+  searchTerm = "",
+}: TableFieldProps<T>) => {
+  const filteredRecipients = recipients.filter(
+    (recipient) =>
+      recipient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      recipient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      recipient.phone.includes(searchTerm) ||
+      recipient.department.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Select</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Phone</TableHead>
+            <TableHead>Department</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredRecipients.length > 0 ? (
+            filteredRecipients.map((recipient) => (
+              <TableRow key={recipient.id}>
+                <TableCell>
+                  <Checkbox
+                    checked={field.value?.includes(recipient.id)}
+                    onCheckedChange={(checked) => {
+                      const newValue = checked
+                        ? [...(field.value || []), recipient.id]
+                        : field.value?.filter(
+                            (id: number) => id !== recipient.id
+                          ) || [];
+                      field.onChange(newValue);
+                    }}
+                  />
                 </TableCell>
+                <TableCell>{recipient.name}</TableCell>
+                <TableCell>{recipient.email}</TableCell>
+                <TableCell>{recipient.phone}</TableCell>
+                <TableCell>{recipient.department}</TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    );
-  }
-);
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={5} className="h-24 text-center">
+                No results found
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
 
 const renderDatePickerValue = (
   value: Date | Date[] | null | undefined,
-  multipleDates?: boolean
+  multipleDates?: boolean,
+  dateFormat?: string
 ): React.ReactNode => {
   if (!value) {
     return <span>{multipleDates ? "Pick dates" : "Pick a date"}</span>;
@@ -413,89 +436,88 @@ const renderDatePickerValue = (
       return <span>Pick dates</span>;
     }
     return value.length === 1
-      ? format(value[0], "PPP")
+      ? format(value[0], dateFormat || "PPP")
       : `${value.length} dates selected`;
   }
 
-  return format(value as Date, "PPP");
+  return format(value as Date, dateFormat || "PPP");
 };
 
-const RadioCardField = memo(
-  ({ field, radioCardoptions }: RadioCardFieldProps) => (
-    <FormControl>
-      <RadioGroup
-        onValueChange={field.onChange}
-        value={field.value}
-        className="grid grid-cols-3"
-      >
-        {radioCardoptions?.map((option) => (
-          <div key={option.value} className="relative col-span-1">
-            <RadioGroupItem
-              value={option.value}
-              id={option.value}
-              className="peer absolute opacity-0 w-0 h-0"
-            />
-            <label
-              htmlFor={option.value}
+const RadioCardField = <T extends FieldValues>({
+  field,
+  radioCardoptions = [],
+}: RadioCardFieldProps<T>) => (
+  <FormControl>
+    <RadioGroup
+      onValueChange={field.onChange}
+      value={field.value}
+      className="grid grid-cols-3"
+    >
+      {radioCardoptions.map((option) => (
+        <div key={option.value} className="relative col-span-1">
+          <RadioGroupItem
+            value={option.value}
+            id={option.value}
+            className="peer absolute opacity-0 w-0 h-0"
+          />
+          <label
+            htmlFor={option.value}
+            className={cn(
+              "cursor-pointer transition-all relative inline-block",
+              "peer-checked:border-primary peer-checked:bg-primary/10"
+            )}
+          >
+            <div
               className={cn(
-                "cursor-pointer transition-all relative inline-block",
-                "peer-checked:border-primary peer-checked:bg-primary/10"
+                "absolute top-[-10px] right-[-5px] text-white rounded-full p-1 z-10 bg-blue-500",
+                field.value === option.value ? "opacity-100" : "opacity-0"
               )}
             >
-              <div
-                className={cn(
-                  "absolute top-[-10px] right-[-5px] text-white rounded-full p-1 z-10 bg-blue-500",
-                  field.value === option.value ? "opacity-100" : "opacity-0"
-                )}
-              >
-                <Check className="h-3 w-3" />
-              </div>
-              {option.content}
-            </label>
-          </div>
-        ))}
-      </RadioGroup>
-    </FormControl>
-  )
+              <Check className="h-3 w-3" />
+            </div>
+            {option.content}
+          </label>
+        </div>
+      ))}
+    </RadioGroup>
+  </FormControl>
 );
 
-const AccordionRadioField = memo(
-  ({
-    field,
-    label,
-    accordionValue,
-    radioOptions,
-  }: AccordionRadioFieldProps) => (
-    <Accordion type="single" collapsible className="w-full border rounded-lg">
-      <AccordionItem
-        value={accordionValue?.toString() || ""}
-        className="border-b-0"
-      >
-        <AccordionTrigger className="px-4 hover:no-underline [&[data-state=open]]:bg-gray-50 [&[data-state=open]]:font-semibold">
-          {label}
-        </AccordionTrigger>
-        <AccordionContent className="px-4 pb-4 pt-0">
-          <RadioGroup
-            value={field.value?.toString() || ""}
-            onValueChange={field.onChange}
-            className="space-y-2"
-          >
-            {radioOptions?.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value={option.value.toString()}
-                  id={`${field.name}-${option.value}`}
-                />
-                <Label htmlFor={`${field.name}-${option.value}`}>
-                  {option.label}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  )
+const AccordionRadioField = <T extends FieldValues>({
+  field,
+  label,
+  accordionValue,
+  radioOptions = [],
+}: AccordionRadioFieldProps<T>) => (
+  <Accordion type="single" collapsible className="w-full border rounded-lg">
+    <AccordionItem
+      value={accordionValue?.toString() || ""}
+      className="border-b-0"
+    >
+      <AccordionTrigger className="px-4 hover:no-underline [&[data-state=open]]:bg-gray-50 [&[data-state=open]]:font-semibold">
+        {label}
+      </AccordionTrigger>
+      <AccordionContent className="px-4 pb-4 pt-0">
+        <RadioGroup
+          value={field.value?.toString() || ""}
+          onValueChange={field.onChange}
+          className="space-y-2"
+        >
+          {radioOptions.map((option) => (
+            <div key={option.value} className="flex items-center space-x-2">
+              <RadioGroupItem
+                value={option.value.toString()}
+                id={`${field.name}-${option.value}`}
+              />
+              <Label htmlFor={`${field.name}-${option.value}`}>
+                {option.label}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </AccordionContent>
+    </AccordionItem>
+  </Accordion>
 );
 
 const fieldComponents = {
@@ -520,7 +542,12 @@ function RenderField<T extends FieldValues>({
     fieldComponents[props.fieldType as keyof typeof fieldComponents];
   if (!FieldComponent) return null;
 
-  return <FieldComponent field={field} {...props} />;
+  return (
+    <FieldComponent
+      field={field}
+      {...{ ...props, accordionValue: props.accordionValue || "" }}
+    />
+  );
 }
 
 function CustomFormField<T extends FieldValues>(

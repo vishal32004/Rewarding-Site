@@ -32,7 +32,10 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import ReceptionistDialog from "@/components/Receptionist/receptioinst-dialog";
-import { fetchEventByParentId } from "@/api/campaign-form";
+import {
+  fetchEventByParentId,
+  fetchEventParentsCategory,
+} from "@/api/campaign-form";
 import { useQuery } from "@tanstack/react-query";
 const defaultValues = {
   campaignName: "",
@@ -154,6 +157,15 @@ const CreateNewCampaign = () => {
     enabled: !!forWho,
     staleTime: 5 * 60 * 1000,
   });
+  const {
+    data: recipientType,
+    isLoading: recipientTypeLoading,
+    isError: recipientTypeError,
+  } = useQuery({
+    queryKey: ["eventsParentCategory"],
+    queryFn: () => fetchEventParentsCategory(),
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <WizardForm
@@ -193,34 +205,23 @@ const CreateNewCampaign = () => {
         fieldNames={stepFields[1]}
       >
         <h2 className="mb-8 text-2xl">Select Recipient Type</h2>
-        <CustomFormField
-          control={form.control}
-          name="forWho"
-          fieldType={FormFieldType.RADIO}
-          radioGridClass="grid-cols-4"
-          radioOptions={[
-            {
-              label: "Internal Team",
-              value: 1,
-            },
-            {
-              label: "External Client",
-              value: 2,
-            },
-            {
-              label: "Channel Partners",
-              value: 3,
-            },
-            {
-              label: "Auto Dealers",
-              value: 4,
-            },
-            {
-              label: "Real Estate",
-              value: 5,
-            },
-          ]}
-        />
+
+        {recipientTypeLoading ? (
+          <div>Loading....</div>
+        ) : recipientTypeError ? (
+          <div>Some Error Occured</div>
+        ) : (
+          <CustomFormField
+            control={form.control}
+            name="forWho"
+            fieldType={FormFieldType.RADIO}
+            radioGridClass="grid-cols-4"
+            radioOptions={recipientType?.data.map((type) => ({
+              label: type.title,
+              value: type.id,
+            }))}
+          />
+        )}
       </WizardStep>
 
       <WizardStep
@@ -237,7 +238,6 @@ const CreateNewCampaign = () => {
           <>
             <div className="space-y-4">
               {events?.data?.some((event) => event.children?.length > 0) ? (
-                // Hierarchical data with accordions
                 events.data.map((parentEvent) => (
                   <CustomFormField
                     key={parentEvent.id}
@@ -253,7 +253,6 @@ const CreateNewCampaign = () => {
                   />
                 ))
               ) : (
-                // Flat data with regular radio buttons
                 <CustomFormField
                   control={form.control}
                   name="event"

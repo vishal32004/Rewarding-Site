@@ -63,16 +63,16 @@ const ReceptionistDialog = ({ forWho }: { forWho: number }) => {
               <TabsTrigger value="import">Import from List</TabsTrigger>
             </TabsList>
             <TabsContent value="individual">
-              {forWho === "internal_team" && (
+              {forWho === 1 && (
                 <MemoizedInternalEmployees onSubmit={handleFormSubmit} />
               )}
-              {forWho === "external_client" && (
+              {forWho === 2 && (
                 <MemoizedExternalClient onSubmit={handleFormSubmit} />
               )}
-              {forWho === "channel_partners" && (
+              {forWho === 3 && (
                 <MemoizedChannelPartnerForm onSubmit={handleFormSubmit} />
               )}
-              {forWho === "Auto" && (
+              {forWho === 4 && (
                 <MemoizedAutoDealersForm onSubmit={handleFormSubmit} />
               )}
             </TabsContent>
