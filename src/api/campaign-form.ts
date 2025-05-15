@@ -2,7 +2,7 @@ import { FetchEventsResponse, FetchEventParentCategoryResponse } from "@/@types/
 import { DemoPoducts } from "@/data/form-products";
 import axios, { AxiosError } from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+import { BASE_URL } from "@/lib/constant";
 
 export const fetchEventByParentId = async (id: number): Promise<FetchEventsResponse> => {
     try {

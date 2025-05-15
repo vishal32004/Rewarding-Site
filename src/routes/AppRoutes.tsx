@@ -14,6 +14,7 @@ import CreateNewCampaign from "@/pages/Campaign/CreateNewCampaign";
 import AppLayout from "@/layouts/AppLayout";
 import { RouteObject } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import MyProfile from "@/pages/MyProfile";
 // import ReportsPage from "@/pages/Reports/Report";
 
 const AppRoutes: RouteObject = {
@@ -26,6 +27,10 @@ const AppRoutes: RouteObject = {
         {
           index: true,
           element: <Dashboard />,
+        },
+        {
+          path: "/profile",
+          element: <MyProfile />,
         },
         {
           path: "/create-new-campaign",

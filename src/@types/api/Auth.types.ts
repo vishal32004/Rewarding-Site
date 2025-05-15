@@ -176,3 +176,15 @@ export type LoginResponse = {
     User?: LoginUser;
     message: string;
 };
+
+export type ChangePasswordResponse = {
+    status: number;
+    error: null | string;
+    data?: LoginUser
+}
+
+export type ProfileUpdateResponse = {
+    status: number;
+    error: string | null;
+    message: string
+}

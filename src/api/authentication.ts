@@ -1,7 +1,7 @@
 import { LoginResponse, SignUpResponse } from "@/@types/api/Auth.types";
 import axios, { AxiosError } from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+import { BASE_URL } from "@/lib/constant";
 
 interface SignUpData {
     company_name: string,

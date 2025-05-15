@@ -16,8 +16,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAppStore } from "@/store/store";
-import cat from "../../../public/images/cat.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -29,13 +28,15 @@ export function NavUser() {
     clearAuth();
     navigate("/login");
   }
+
+  const avatarImg = "/images/cat.png";
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild={false} className="rounded-lg">
             <Avatar>
-              <AvatarImage src={cat} alt={user?.first_name} />
+              <AvatarImage src={avatarImg} alt={user?.first_name} />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
@@ -48,7 +49,7 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={cat} alt={user?.first_name} />
+                  <AvatarImage src={avatarImg} alt={user?.first_name} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -62,8 +63,10 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+                <Link to="/profile" className="flex gap-2">
+                  <BadgeCheck />
+                  Account
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
