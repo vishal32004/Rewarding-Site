@@ -35,6 +35,7 @@ import ReceptionistDialog from "@/components/Receptionist/receptioinst-dialog";
 import {
   fetchEventByParentId,
   fetchEventParentsCategory,
+  fetchFormProducts,
 } from "@/api/campaign-form";
 import { useQuery } from "@tanstack/react-query";
 const defaultValues = {
@@ -164,6 +165,15 @@ const CreateNewCampaign = () => {
   } = useQuery({
     queryKey: ["eventsParentCategory"],
     queryFn: () => fetchEventParentsCategory(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const {
+    data: products,
+    isLoading: productsLoading,
+    isError: productsError,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetchFormProducts(),
     staleTime: 5 * 60 * 1000,
   });
 

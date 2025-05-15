@@ -5,3 +5,6 @@ body {
 button {
   cursor: pointer;
 }
+.card-radio:has(button[data-state="checked"]) label {
+  border: 2px solid oklch(0.57 0.24 270.01);
+}

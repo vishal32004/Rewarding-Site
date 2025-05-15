@@ -482,7 +482,6 @@ const RadioCardField = <T extends FieldValues>({
     </RadioGroup>
   </FormControl>
 );
-
 const AccordionRadioField = <T extends FieldValues>({
   field,
   label,
@@ -501,16 +500,24 @@ const AccordionRadioField = <T extends FieldValues>({
         <RadioGroup
           value={field.value?.toString() || ""}
           onValueChange={field.onChange}
-          className="space-y-2"
+          className="space-y-2 grid-cols-3 py-4"
         >
           {radioOptions.map((option) => (
-            <div key={option.value} className="flex items-center space-x-2">
-              <RadioGroupItem
-                value={option.value.toString()}
-                id={`${field.name}-${option.value}`}
-              />
-              <Label htmlFor={`${field.name}-${option.value}`}>
-                {option.label}
+            <div key={option.value} className="flex items-center">
+              <Label
+                htmlFor={`${field.name}-${option.value}`}
+                className={`flex items-center w-full p-3 rounded-lg border cursor-pointer transition-colors ${
+                  field.value?.toString() === option.value.toString()
+                    ? "bg-blue-50 border-blue-500"
+                    : "border-gray-200 hover:bg-gray-50"
+                }`}
+              >
+                <RadioGroupItem
+                  value={option.value.toString()}
+                  id={`${field.name}-${option.value}`}
+                  className="sr-only"
+                />
+                <span className="ml-2">{option.label}</span>
               </Label>
             </div>
           ))}
@@ -561,9 +568,10 @@ function CustomFormField<T extends FieldValues>(
       name={name}
       render={({ field }) => (
         <FormItem className="flex-1">
-          {fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="mb-1">{label}</FormLabel>
-          )}
+          {fieldType !== FormFieldType.CHECKBOX &&
+            fieldType !== FormFieldType.ACCORDION_RADIO &&
+            label && <FormLabel className="mb-1">{label}</FormLabel>}
+
           <RenderField field={field} props={props} />
           <FormMessage className="text-red-400" />
         </FormItem>

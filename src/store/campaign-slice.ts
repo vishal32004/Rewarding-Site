@@ -1,5 +1,4 @@
 import { StateCreator } from "zustand";
-// import axios from "axios";
 import { Filters, Product } from "@/@types/Catalog.types";
 
 export interface CampaignFormStore {
@@ -7,7 +6,6 @@ export interface CampaignFormStore {
     filteredProducts: Product[];
     selectedProducts: string[];
     filters: Filters;
-    // Filter methods
     applyFilters: (filters: Partial<Filters>) => void;
     resetFilters: () => void;
     toggleProductSelection: (productId: string) => void;
@@ -47,7 +45,6 @@ export const createCampaignFormSlice: StateCreator<CampaignFormStore> = (set, ge
         });
 
 
-        // Apply sorting
         if (updatedFilters.sortBy === "priceLowToHigh") {
             filtered.sort((a, b) => a.price - b.price);
         } else if (updatedFilters.sortBy === "priceHighToLow") {
