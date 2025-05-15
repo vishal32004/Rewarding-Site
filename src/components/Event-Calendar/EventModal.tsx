@@ -14,11 +14,9 @@ import {
   PartyPopper,
   Utensils,
   Landmark,
-  Clock,
-  MapPin,
 } from "lucide-react";
 import type { Event, EventType } from "@/@types/CalendarEvents.types";
-import { formatDate, formatTime } from "@/lib/helper";
+import { formatDate } from "@/lib/helper";
 
 interface EventModalProps {
   event: Event;
@@ -100,28 +98,6 @@ export function EventModal({ event, isOpen, onClose }: EventModalProps) {
               </div>
             </div>
           </div>
-
-          {event.time && (
-            <div className="flex items-start gap-3">
-              <Clock className="h-5 w-5 text-blue-600 mt-0.5" />
-              <div>
-                <div className="font-medium">Time</div>
-                <div className="text-muted-foreground">
-                  {formatTime(event.time)}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {event.location && (
-            <div className="flex items-start gap-3">
-              <MapPin className="h-5 w-5 text-blue-600 mt-0.5" />
-              <div>
-                <div className="font-medium">Location</div>
-                <div className="text-muted-foreground">{event.location}</div>
-              </div>
-            </div>
-          )}
 
           {event.description && (
             <div className="pt-2 border-t">

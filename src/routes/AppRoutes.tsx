@@ -13,68 +13,74 @@ import CreateNewCampaign from "@/pages/Campaign/CreateNewCampaign";
 // import EditLandingPageTemplate from "@/pages/Landing-Page-Template/EditLandingPageTemplate";
 import AppLayout from "@/layouts/AppLayout";
 import { RouteObject } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
 // import ReportsPage from "@/pages/Reports/Report";
 
 const AppRoutes: RouteObject = {
   path: "/",
-  element: <AppLayout />,
+  element: <ProtectedRoute />,
   children: [
     {
-      index: true,
-      element: <Dashboard />,
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: <Dashboard />,
+        },
+        {
+          path: "/create-new-campaign",
+          element: <CreateNewCampaign />,
+        },
+        // {
+        //   path: "/view-campaign",
+        //   element: <ViewCampaign />,
+        // },
+        // {
+        //   path: "/storefront",
+        //   element: <Storefront />,
+        // },
+        // {
+        //   path: "/admins",
+        //   element: <Admin />,
+        // },
+        // {
+        //   path: "/email-template",
+        //   element: <EmailTemplatesGallery />,
+        // },
+        // {
+        //   path: "/payment",
+        //   element: <Payment />,
+        // },
+        // {
+        //   path: "/add-funds",
+        //   element: <AddFunds />,
+        // },
+        // {
+        //   path: "/transation-history",
+        //   element: <TransactionHistory />,
+        // },
+        // {
+        //   path: "/notification",
+        //   element: <NotificationSettings />,
+        // },
+        // {
+        //   path: "/landing-page",
+        //   element: <LandingPageList />,
+        // },
+        // {
+        //   path: "/landing/:id/preview",
+        //   element: <PreviewLandingTemplate />,
+        // },
+        // {
+        //   path: "/landing/:id/edit",
+        //   element: <EditLandingPageTemplate />,
+        // },
+        // {
+        //   path: "/reports",
+        //   element: <ReportsPage />,
+        // },
+      ],
     },
-    {
-      path: "/create-new-campaign",
-      element: <CreateNewCampaign />,
-    },
-    // {
-    //   path: "/view-campaign",
-    //   element: <ViewCampaign />,
-    // },
-    // {
-    //   path: "/storefront",
-    //   element: <Storefront />,
-    // },
-    // {
-    //   path: "/admins",
-    //   element: <Admin />,
-    // },
-    // {
-    //   path: "/email-template",
-    //   element: <EmailTemplatesGallery />,
-    // },
-    // {
-    //   path: "/payment",
-    //   element: <Payment />,
-    // },
-    // {
-    //   path: "/add-funds",
-    //   element: <AddFunds />,
-    // },
-    // {
-    //   path: "/transation-history",
-    //   element: <TransactionHistory />,
-    // },
-    // {
-    //   path: "/notification",
-    //   element: <NotificationSettings />,
-    // },
-    // {
-    //   path: "/landing-page",
-    //   element: <LandingPageList />,
-    // },
-    // {
-    //   path: "/landing/:id/preview",
-    //   element: <PreviewLandingTemplate />,
-    // },
-    // {
-    //   path: "/landing/:id/edit",
-    //   element: <EditLandingPageTemplate />,
-    // },
-    // {
-    //   path: "/reports",
-    //   element: <ReportsPage />,
-    // },
   ],
 };
 

@@ -20,7 +20,7 @@ import { calculateTotal } from "@/lib/helper";
 import { recipients } from "@/data/recipients";
 import { formSchema } from "@/@types/CampaignFrom.schema";
 import { useMemo } from "react";
-import { useCampaignFormStore } from "@/store/store";
+import { useAppStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -35,7 +35,7 @@ import ReceptionistDialog from "@/components/Receptionist/receptioinst-dialog";
 import {
   fetchEventByParentId,
   fetchEventParentsCategory,
-  fetchFormProducts,
+  // fetchFormProducts,
 } from "@/api/campaign-form";
 import { useQuery } from "@tanstack/react-query";
 const defaultValues = {
@@ -79,7 +79,7 @@ const CreateNewCampaign = () => {
     toggleProductSelection,
     resetFilters,
     clearSelectedProducts,
-  } = useCampaignFormStore();
+  } = useAppStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -167,15 +167,15 @@ const CreateNewCampaign = () => {
     queryFn: () => fetchEventParentsCategory(),
     staleTime: 5 * 60 * 1000,
   });
-  const {
-    data: products,
-    isLoading: productsLoading,
-    isError: productsError,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => fetchFormProducts(),
-    staleTime: 5 * 60 * 1000,
-  });
+  // const {
+  //   data: products,
+  //   isLoading: productsLoading,
+  //   isError: productsError,
+  // } = useQuery({
+  //   queryKey: ["products"],
+  //   queryFn: () => fetchFormProducts(),
+  //   staleTime: 5 * 60 * 1000,
+  // });
 
   return (
     <WizardForm

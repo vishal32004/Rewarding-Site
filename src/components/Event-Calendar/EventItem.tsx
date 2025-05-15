@@ -6,7 +6,6 @@ import {
   PartyPopper,
   Utensils,
   Landmark,
-  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Event, EventType } from "@/@types/CalendarEvents.types";
@@ -65,12 +64,6 @@ export function EventItem({ event, onClick }: EventItemProps) {
     >
       {getEventIcon(event.type)}
       <span className="truncate">{event.title}</span>
-      {event.time && (
-        <span className="ml-auto flex items-center text-[10px] opacity-80 whitespace-nowrap">
-          <Clock className="h-2.5 w-2.5 mr-0.5" />
-          {event.time}
-        </span>
-      )}
     </button>
   );
 }

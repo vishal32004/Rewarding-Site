@@ -9,6 +9,14 @@ import {
 } from "@/components/Event-Calendar/ViewSelector";
 import type { Event } from "@/@types/CalendarEvents.types";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 const sampleEvents: Event[] = [
   {
     id: "1",
@@ -16,7 +24,6 @@ const sampleEvents: Event[] = [
     date: "2025-04-15",
     type: "birthday",
     description: "Sarah's 30th birthday celebration",
-    location: "Hometown Bakery",
   },
   {
     id: "2",
@@ -104,10 +111,52 @@ const sampleEvents: Event[] = [
     id: "12",
     title: "Anniversary Dinner",
     date: "2025-05-20",
-    time: "19:30",
-    type: "dinner",
+    type: "anniversary",
     description: "5 year anniversary celebration",
-    location: "Fancy Restaurant",
+  },
+
+  // Additional birthday/anniversary events for same days
+  {
+    id: "13",
+    title: "Grandma's Birthday",
+    date: "2025-04-15", // Same as Sarah's Birthday
+    type: "birthday",
+    description: "Grandma's 80th birthday",
+  },
+  {
+    id: "14",
+    title: "Work Anniversary",
+    date: "2025-05-05", // Same as Mom's Birthday
+    type: "anniversary",
+    description: "10 years at the company",
+  },
+  {
+    id: "15",
+    title: "Parents' Anniversary",
+    date: "2025-05-20", // Same as Anniversary Dinner
+    type: "anniversary",
+    description: "Mom and Dad's 30th wedding anniversary",
+  },
+  {
+    id: "16",
+    title: "Test Event",
+    date: "2025-05-12", // Same as Anniversary Dinner
+    type: "anniversary",
+    description: "Test",
+  },
+  {
+    id: "17",
+    title: "Test 2 ",
+    date: "2025-05-12", // Same as Anniversary Dinner
+    type: "anniversary",
+    description: "Test",
+  },
+  {
+    id: "18",
+    title: "Parents' Anniversary",
+    date: "2025-05-12", // Same as Anniversary Dinner
+    type: "anniversary",
+    description: "Mom and Dad's 30th wedding anniversary",
   },
 ];
 
@@ -116,6 +165,7 @@ export default function CalendarPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<CalendarView>("monthly");
+  const [eventFilter, setEventFilter] = useState<string>("birthday");
 
   const handleEventClick = (event: Event) => {
     setSelectedEvent(event);
@@ -127,18 +177,50 @@ export default function CalendarPage() {
     setSelectedEvent(null);
   };
 
+  const filterEvents = (events: Event[]): Event[] => {
+    // if (eventFilter === "all") return sampleEvents;
+    if (!eventFilter) return events;
+    return events.filter((event) => event.type === eventFilter);
+  };
+  const filteredEvents = filterEvents(sampleEvents);
+
   return (
-    <div className="container mx-auto py-10 px-4 bg-gradient-to-b from-white to-blue-50/30 min-h-screen">
+    <div className="container mx-auto py-10 px-4 bg-gradient-to-b from-white to-blue-50/30">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-          Event Calendar
+          Calendar
         </h1>
-        <ViewSelector currentView={currentView} onViewChange={setCurrentView} />
+        <div className="flex gap-5">
+          <Select
+            value={eventFilter}
+            onValueChange={(value) => setEventFilter(value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              {/* <SelectItem value="all">All Events</SelectItem> */}
+              <SelectItem value="birthday">Birthday</SelectItem>
+              <SelectItem value="anniversary">Anniversary</SelectItem>
+              <SelectItem value="meeting">Meeting</SelectItem>
+              <SelectItem value="trip">Trip</SelectItem>
+              <SelectItem value="dinner">Dinner</SelectItem>
+              <SelectItem value="party">Party</SelectItem>
+              <SelectItem value="holiday">Holiday</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <ViewSelector
+            currentView={currentView}
+            onViewChange={setCurrentView}
+          />
+        </div>
       </div>
 
       {currentView === "monthly" && (
         <MonthlyView
-          events={sampleEvents}
+          events={filteredEvents}
           onEventClick={handleEventClick}
           currentMonth={currentDate}
           setCurrentMonth={setCurrentDate}
@@ -147,7 +229,7 @@ export default function CalendarPage() {
 
       {currentView === "weekly" && (
         <WeeklyView
-          events={sampleEvents}
+          events={filteredEvents}
           onEventClick={handleEventClick}
           currentDate={currentDate}
           setCurrentDate={setCurrentDate}
@@ -156,7 +238,7 @@ export default function CalendarPage() {
 
       {currentView === "daily" && (
         <DailyView
-          events={sampleEvents}
+          events={filteredEvents}
           onEventClick={handleEventClick}
           currentDate={currentDate}
           setCurrentDate={setCurrentDate}

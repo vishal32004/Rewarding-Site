@@ -12,6 +12,7 @@ import CustomFormField from "@/components/CustomFormField";
 import { FormFieldType } from "@/@types/CustomFormField.types";
 import { signUp } from "@/api/authentication";
 import { toast } from "sonner";
+import { SelectItem } from "@/components/ui/select";
 
 const signupFormSchema = z.object({
   company_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -119,10 +120,23 @@ const Signup = () => {
                       <CustomFormField
                         control={form.control}
                         name="number_of_employee"
-                        fieldType={FormFieldType.INPUT}
+                        fieldType={FormFieldType.SELECT}
                         label="Number Of Employees"
-                        placeholder="Enter Email"
-                      />
+                      >
+                        <SelectItem value="0-50">0-50</SelectItem>
+                        <SelectItem value="51 - 200">51 - 200</SelectItem>
+                        <SelectItem value="201 - 500">201 - 500</SelectItem>
+                        <SelectItem value="501 - 1000">501 - 1000</SelectItem>
+                        <SelectItem value="1001 - 5000">1001 - 5000</SelectItem>
+                        <SelectItem value="5001 - 10000">
+                          5001 - 10000
+                        </SelectItem>
+                        <SelectItem
+                          value="10000+"
+                        >
+                          10000+
+                        </SelectItem>
+                      </CustomFormField>
                     </div>
                     <Button
                       type="submit"

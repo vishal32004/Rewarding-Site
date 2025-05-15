@@ -15,11 +15,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useState } from "react";
-import { OtpModal } from "@/components/Popup/OtpModal";
-import { Link, useNavigate } from "react-router-dom";
+// import { OtpModal } from "@/components/Popup/OtpModal";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import CustomFormField from "@/components/CustomFormField";
 import { FormFieldType } from "@/@types/CustomFormField.types";
-
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/api/authentication";
+import { toast } from "sonner";
+import { useAppStore } from "@/store/store";
 
 const loginFormSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -30,8 +33,32 @@ const loginFormSchema = z.object({
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
+  // const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  const { setAuth } = useAppStore();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      if (data.status === 1 && data.User) {
+        toast.success(data.message);
+        setAuth(data.User);
+        // Redirect to login or verification page
+        // navigate("/thank-you-for-request");
+        // Or if you need OTP verification:
+        // setOpen(true);
+        navigate(from, { replace: true });
+      } else {
+        console.log(data.error);
+        toast.error(data.message || "Failed to Login");
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || "An error occurred during signup");
+    },
+  });
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -43,10 +70,8 @@ const Login = () => {
 
   function onSubmit(values: z.infer<typeof loginFormSchema>) {
     console.log(values);
-    setOpen(true);
-    setTimeout(() => {
-      navigate("/admin/dashboard");
-    }, 1000);
+    // setOpen(true);
+    mutate(values);
   }
 
   function handleTogglePassword() {
@@ -72,9 +97,7 @@ const Login = () => {
                 >
                   <div className="flex flex-col gap-6">
                     <div className="flex flex-col items-center text-center">
-                      <h1 className="text-2xl font-bold">
-                        Welcome back
-                      </h1>
+                      <h1 className="text-2xl font-bold">Welcome back</h1>
                     </div>
 
                     <CustomFormField
@@ -121,6 +144,7 @@ const Login = () => {
                     <Button
                       type="submit"
                       className="w-full cursor-pointer"
+                      disabled={isPending}
                     >
                       Login
                     </Button>
@@ -140,7 +164,7 @@ const Login = () => {
           </Card>
         </div>
       </div>
-      {open && <OtpModal open={open} setOpen={setOpen} />}
+      {/* {open && <OtpModal open={open} setOpen={setOpen} />} */}
     </div>
   );
 };

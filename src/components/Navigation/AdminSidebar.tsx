@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   Camera,
-  // Home,
   BarChart2,
   ShoppingCart,
   DollarSign,
@@ -27,11 +26,6 @@ import { NavUser } from "@/components/Navigation/NavUser";
 import { Link } from "react-router-dom";
 
 const data = {
-  user: {
-    name: "Vishal Tiwari",
-    email: "vishal@df.com",
-    avatar: "https://www.digitalfueled.com/assets/images/logo.png",
-  },
   navMain: [
     {
       title: "Campaign",
@@ -232,7 +226,7 @@ export function AdminSidebar({
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={data.user} />
+          <NavUser />
         </SidebarFooter>
       </Sidebar>
 
