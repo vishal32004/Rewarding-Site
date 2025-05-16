@@ -6,7 +6,7 @@ export const formSchema = z
         }),
         description: z.string(),
         forWho: z.number().min(1, { message: "Please Select at least one option" }),
-        event: z.string(),
+        event: z.number(),
         otherEvent: z.string(),
         searchRecipients: z.string(),
         selectedReceptionists: z.number().array().nonempty(),

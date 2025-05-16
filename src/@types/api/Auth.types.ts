@@ -188,3 +188,48 @@ export type ProfileUpdateResponse = {
     error: string | null;
     message: string
 }
+
+
+interface UserRegisterData {
+    id: number;
+    user_id: number;
+    social_id: string | null;
+    avatar: string | null;
+    user_type: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    Mobile: string;
+    Address: string;
+    City: string;
+    State: string;
+    Country: string;
+    PinCode: string;
+    Landmark: string;
+    Shipping_Address: string;
+    Shipping_City: string;
+    Shipping_State: string;
+    Shipping_Country: string;
+    Shipping_Landmark: string;
+    Shipping_PinCode: string;
+    Gender: string;
+    Day: string;
+    Month: string;
+    Year: string;
+    term: string;
+    v_email: string;
+    company_name: string;
+    gst_no: string;
+    pan_no: string;
+    status: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface UserDetailsResponse {
+    status: number;
+    error: string | null;
+    Userdata?: LoginUser;
+    Registerdata?: UserRegisterData;
+    message: string;
+}

@@ -10,6 +10,7 @@ import { useAppStore } from "@/store/store";
 import { toast } from "sonner";
 import { changePassword } from "@/api/profile";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 const passwordFormSchema = z
   .object({
     user_id: z.number(),
@@ -34,19 +35,22 @@ const passwordFormSchema = z
 export type ChangePasswordFormValues = z.infer<typeof passwordFormSchema>;
 
 export const ChangePasswordForm = () => {
-  const { user } = useAppStore();
+  const navigate = useNavigate();
+  const { user, clearAuth } = useAppStore();
   const { mutate, isPending } = useMutation({
     mutationFn: changePassword,
     onSuccess: (data) => {
       if (data.status === 1) {
         toast.success("Passoword Changed successfully!");
+        clearAuth();
+        navigate("/login");
       } else {
         console.log(data.error);
-        toast.error(data.error || "Failed to create account");
+        toast.error(data.error || "Failed to Change Pasword");
       }
     },
     onError: (error) => {
-      toast.error(error.message || "An error occurred during signup");
+      toast.error(error.message || "An error occurred");
     },
   });
 

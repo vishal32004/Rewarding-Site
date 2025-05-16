@@ -44,14 +44,14 @@ export const BusinessVerificationForm = () => {
     mutationFn: updateProfile,
     onSuccess: (data) => {
       if (data.status === 1) {
-        toast.success("Account created successfully!");
+        toast.success("Request Sent");
       } else {
         console.log(data.error);
-        toast.error(data.error || "Failed to create account");
+        toast.error(data.error || "Failed To Sent Request");
       }
     },
     onError: (error) => {
-      toast.error(error.message || "An error occurred during signup");
+      toast.error(error.message || "An error occurred");
     },
   });
 

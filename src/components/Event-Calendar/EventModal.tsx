@@ -98,20 +98,11 @@ export function EventModal({ event, isOpen, onClose }: EventModalProps) {
               </div>
             </div>
           </div>
-
-          {event.description && (
-            <div className="pt-2 border-t">
-              <div className="font-medium mb-1">Description</div>
-              <div className="text-muted-foreground bg-muted/20 p-3 rounded-md">
-                {event.description}
-              </div>
-            </div>
-          )}
         </div>
 
         <DialogFooter>
           <Button onClick={onClose} className="bg-blue-600 hover:bg-blue-700">
-            Close
+            Send Gift Now
           </Button>
         </DialogFooter>
       </DialogContent>

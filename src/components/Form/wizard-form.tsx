@@ -29,7 +29,7 @@ export function WizardForm<T extends z.ZodType>({
             form={form}
             stepFields={stepFields}
           >
-            <WizardProgress className="mb-8" />
+            <div className="flex justify-center"><WizardProgress className="mb-8" /></div>
             {children}
           </MemoizedWizardFormContent>
         </Wizard>

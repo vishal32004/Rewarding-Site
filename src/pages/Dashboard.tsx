@@ -9,10 +9,10 @@ import {
   BarChart3,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const name = "Vishal";
+import { useAppStore } from "@/store/store";
 
 const Dashboard = () => {
+  const { user } = useAppStore();
   const callActions = [
     {
       title: "Start New Campaign",
@@ -65,7 +65,7 @@ const Dashboard = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-slate-100">
-                Hello, {name}
+                Hello, {user?.first_name}  {user?.last_name}
               </h1>
               <p className="text-slate-500 dark:text-slate-400 mt-1">
                 Welcome back to your dashboard

@@ -23,7 +23,6 @@ const sampleEvents: Event[] = [
     title: "Sarah's Birthday",
     date: "2025-04-15",
     type: "birthday",
-    description: "Sarah's 30th birthday celebration",
   },
   {
     id: "2",
@@ -31,7 +30,6 @@ const sampleEvents: Event[] = [
     date: "2025-04-16",
     time: "10:00",
     type: "meeting",
-    description: "Weekly team sync meeting",
     location: "Conference Room A",
   },
   {
@@ -39,7 +37,6 @@ const sampleEvents: Event[] = [
     title: "Beach Trip",
     date: "2025-04-20",
     type: "trip",
-    description: "Weekend getaway to the beach",
     location: "Sunny Beach Resort",
   },
   {
@@ -48,7 +45,6 @@ const sampleEvents: Event[] = [
     date: "2025-04-18",
     time: "19:00",
     type: "dinner",
-    description: "Catching up with old friends",
     location: "Italian Restaurant",
   },
   {
@@ -56,7 +52,6 @@ const sampleEvents: Event[] = [
     title: "Project Deadline",
     date: "2025-04-30",
     type: "meeting",
-    description: "Final submission for the Q2 project",
   },
   {
     id: "6",
@@ -64,7 +59,6 @@ const sampleEvents: Event[] = [
     date: "2025-04-25",
     time: "18:00",
     type: "party",
-    description: "Annual summer kickoff party",
     location: "Rooftop Garden",
   },
   {
@@ -73,7 +67,6 @@ const sampleEvents: Event[] = [
     date: "2025-04-22",
     time: "14:30",
     type: "other",
-    description: "Annual checkup",
     location: "Medical Center",
   },
   {
@@ -82,7 +75,6 @@ const sampleEvents: Event[] = [
     date: "2025-05-01",
     time: "08:45",
     type: "trip",
-    description: "Vacation in Paris",
     location: "International Airport",
   },
   {
@@ -90,21 +82,18 @@ const sampleEvents: Event[] = [
     title: "Mom's Birthday",
     date: "2025-05-05",
     type: "birthday",
-    description: "Don't forget to buy a gift!",
   },
   {
     id: "10",
     title: "Memorial Day",
     date: "2025-05-26",
     type: "holiday",
-    description: "National holiday",
   },
   {
     id: "11",
     title: "Conference",
     date: "2025-05-15",
     type: "meeting",
-    description: "Annual industry conference",
     location: "Convention Center",
   },
   {
@@ -112,7 +101,6 @@ const sampleEvents: Event[] = [
     title: "Anniversary Dinner",
     date: "2025-05-20",
     type: "anniversary",
-    description: "5 year anniversary celebration",
   },
 
   // Additional birthday/anniversary events for same days
@@ -121,42 +109,36 @@ const sampleEvents: Event[] = [
     title: "Grandma's Birthday",
     date: "2025-04-15", // Same as Sarah's Birthday
     type: "birthday",
-    description: "Grandma's 80th birthday",
   },
   {
     id: "14",
     title: "Work Anniversary",
     date: "2025-05-05", // Same as Mom's Birthday
     type: "anniversary",
-    description: "10 years at the company",
   },
   {
     id: "15",
     title: "Parents' Anniversary",
     date: "2025-05-20", // Same as Anniversary Dinner
     type: "anniversary",
-    description: "Mom and Dad's 30th wedding anniversary",
   },
   {
     id: "16",
     title: "Test Event",
     date: "2025-05-12", // Same as Anniversary Dinner
     type: "anniversary",
-    description: "Test",
   },
   {
     id: "17",
     title: "Test 2 ",
     date: "2025-05-12", // Same as Anniversary Dinner
     type: "anniversary",
-    description: "Test",
   },
   {
     id: "18",
     title: "Parents' Anniversary",
     date: "2025-05-12", // Same as Anniversary Dinner
     type: "anniversary",
-    description: "Mom and Dad's 30th wedding anniversary",
   },
 ];
 

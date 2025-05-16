@@ -11,6 +11,7 @@ import {
   Link2Icon,
   ShoppingCart,
   Star,
+  UserPlus,
   X,
 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,7 +43,7 @@ const defaultValues = {
   campaignName: "",
   description: "",
   forWho: 0,
-  event: "",
+  event: 0,
   otherEvent: "",
   searchRecipients: "",
   selectedReceptionists: [] as number[],
@@ -176,7 +177,6 @@ const CreateNewCampaign = () => {
   //   queryFn: () => fetchFormProducts(),
   //   staleTime: 5 * 60 * 1000,
   // });
-
   return (
     <WizardForm
       onSubmit={onSubmit}
@@ -225,10 +225,11 @@ const CreateNewCampaign = () => {
             control={form.control}
             name="forWho"
             fieldType={FormFieldType.RADIO}
-            radioGridClass="grid-cols-4"
+            radioGridClass="grid-cols-3"
             radioOptions={recipientType?.data.map((type) => ({
               label: type.title,
               value: type.id,
+              icon: UserPlus,
             }))}
           />
         )}

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
@@ -265,53 +265,35 @@ function WizardNavigation({ className }: WizardNavigationProps) {
 interface WizardProgressProps {
   className?: string;
 }
+
 function WizardProgress({ className }: WizardProgressProps) {
-  const { currentStep, visibleSteps, goToStep } = useWizard();
+  const { currentStep, visibleSteps } = useWizard();
+  const progressPercentage = ((visibleSteps.indexOf(currentStep) + 1) / visibleSteps.length) * 100;
 
   return (
-    <div
-      className={cn(
-        "flex items-center justify-center space-x-2 my-4",
-        className
-      )}
-    >
-      {visibleSteps.map((step, index) => {
-        const isActive = currentStep === step;
-        const isCompleted =
-          visibleSteps.indexOf(currentStep) > visibleSteps.indexOf(step);
+    <div className={cn("w-2/3 relative", className)}>
+      <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
+        <div
+          className="absolute left-0 top-0 h-full bg-primary transition-all duration-300"
+          style={{ width: `${progressPercentage}%` }}
+        />
+      </div>
 
-        return (
-          <div key={step} className="flex items-center">
-            {index > 0 && (
-              <div
-                className={cn(
-                  "h-0.5 w-10",
-                  visibleSteps.indexOf(currentStep) >= index
-                    ? "bg-primary"
-                    : "bg-muted"
-                )}
-              />
-            )}
-            <button
-              type="button"
-              onClick={() => goToStep(step)}
+      {/* Step markers */}
+      <div className="absolute top-1/2 left-0 right-0 flex justify-between -translate-y-1/2">
+        {visibleSteps.map((step, index) => {
+          const isCompleted = visibleSteps.indexOf(currentStep) >= index;
+          return (
+            <div
+              key={step}
               className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-full border transition-colors",
-                isActive && "border-primary bg-primary text-primary-foreground",
-                isCompleted && "border-primary bg-primary/20 text-primary",
-                !isActive && !isCompleted && "border-muted bg-background"
+                "h-3 w-3 rounded-full border-2",
+                isCompleted ? "bg-primary border-primary" : "bg-background border-muted"
               )}
-              aria-label={`Go to step ${index + 1}`}
-            >
-              {isCompleted ? (
-                <Check className="h-4 w-4" />
-              ) : (
-                <span className="text-sm font-medium">{index + 1}</span>
-              )}
-            </button>
-          </div>
-        );
-      })}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -372,7 +354,9 @@ function WizardButtons({
         onClick={prevStep}
         className={cn(
           "flex items-center gap-1 bg-transparent shadow-none rounded-md px-4 py-2 text-sm font-medium transition-colors",
-          isFirstStep ? "hidden" : "text-black hover:bg-transparent hover:text-primary"
+          isFirstStep
+            ? "hidden"
+            : "text-black hover:bg-transparent hover:text-primary"
         )}
         disabled={isFirstStep || isLoading}
       >

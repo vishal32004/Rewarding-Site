@@ -1,4 +1,4 @@
-export type EventType = "birthday" | "trip" | "meeting" | "party" | "dinner" | "holiday" | "other"
+export type EventType = "birthday" | "trip" | "meeting" | "party" | "dinner" | "holiday" | "anniversary" | "other"
 
 export interface Event {
     id: string

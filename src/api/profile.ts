@@ -1,4 +1,4 @@
-import { ChangePasswordResponse, ProfileUpdateResponse } from "@/@types/api/Auth.types";
+import { ChangePasswordResponse, ProfileUpdateResponse, UserDetailsResponse } from "@/@types/api/Auth.types";
 import { ProfileUpdateForm } from "@/components/Form/BusinessVerificationForm"
 import { ChangePasswordFormValues } from "@/components/Form/ChangePasswordForm";
 import { BASE_URL } from "@/lib/constant";
@@ -25,6 +25,22 @@ export const updateProfile = async (data: ProfileUpdateForm): Promise<ProfileUpd
         return response.data;
     } catch (err) {
         const error = err as AxiosError<ProfileUpdateResponse>;
+        return {
+            status: 0,
+            error: error.response?.data?.error || error.message,
+            message: 'Some Error Occured',
+        };
+    }
+}
+
+export const fetchUserDetails = async (email: string): Promise<UserDetailsResponse> => {
+    try {
+        const response = await axios.post<UserDetailsResponse>(`${BASE_URL}/user-details`, {
+            email
+        });
+        return response.data;
+    } catch (err) {
+        const error = err as AxiosError<UserDetailsResponse>;
         return {
             status: 0,
             error: error.response?.data?.error || error.message,

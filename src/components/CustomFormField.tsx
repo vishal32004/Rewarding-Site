@@ -219,7 +219,7 @@ const DatePickerField = <T extends FieldValues>({
   dateFormat = "PPP",
 }: DatePickerFieldProps<T>) => (
   <Popover>
-    <PopoverTrigger asChild>
+    <PopoverTrigger asChild={false}>
       <FormControl>
         <Button
           variant="outline"
@@ -238,7 +238,7 @@ const DatePickerField = <T extends FieldValues>({
         mode={multipleDates ? "multiple" : "single"}
         selected={field.value}
         onSelect={field.onChange}
-        disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+        // disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
         initialFocus
       />
     </PopoverContent>
@@ -318,7 +318,7 @@ const RadioField = <T extends FieldValues>({
           <FormControl>
             <RadioGroupItem value={option.value as string} className="hidden" />
           </FormControl>
-          <FormLabel className="font-normal text-center text-md h-full p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-100 flex flex-col items-center justify-center w-full">
+          <FormLabel className="font-normal text-center gap-2 text-md h-full px-4 py-6 border-2 rounded-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center w-full">
             {option.icon && <option.icon />}
             {option.label}
           </FormLabel>

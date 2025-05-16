@@ -5,7 +5,6 @@ import {
   ShoppingCart,
   DollarSign,
   Users,
-  FileText,
   Settings,
   Command,
 } from "lucide-react";
@@ -85,21 +84,6 @@ const data = {
         },
         {
           title: "Recipient Level",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Product Level Reporting",
-      Icon: FileText, // Changed to FileText icon
-      url: "#",
-      items: [
-        {
-          title: "Top Products",
-          url: "#",
-        },
-        {
-          title: "Top Categories",
           url: "#",
         },
       ],
