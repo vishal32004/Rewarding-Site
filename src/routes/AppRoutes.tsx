@@ -15,7 +15,7 @@ import AppLayout from "@/layouts/AppLayout";
 import { RouteObject } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import MyProfile from "@/pages/MyProfile";
-// import ReportsPage from "@/pages/Reports/Report";
+import ReportsPage from "@/pages/Report/Reports";
 
 const AppRoutes: RouteObject = {
   path: "/",
@@ -80,10 +80,10 @@ const AppRoutes: RouteObject = {
         //   path: "/landing/:id/edit",
         //   element: <EditLandingPageTemplate />,
         // },
-        // {
-        //   path: "/reports",
-        //   element: <ReportsPage />,
-        // },
+        {
+          path: "/reports",
+          element: <ReportsPage />,
+        },
       ],
     },
   ],

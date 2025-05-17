@@ -84,6 +84,7 @@ const ReceptionistDialog = ({ forWho }: { forWho: number }) => {
             </TabsContent>
             <TabsContent value="import">
               <ImportList
+              //@ts-ignore
                 forWho={forWho}
                 onImport={handleImport}
                 onCancel={() => setAddDialogOpen(false)}
