@@ -39,7 +39,6 @@ export const login = async (data: LoginData): Promise<LoginResponse> => {
             status: error.response?.status || 0,
             error: error.response?.data?.error || error.message,
             message: error.response?.data?.message || "Signup failed",
-            User: undefined
         };
     }
 };

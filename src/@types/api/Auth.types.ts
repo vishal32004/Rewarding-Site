@@ -170,12 +170,6 @@ export type LoginUser = {
     status: number;
 };
 
-export type LoginResponse = {
-    status: number;
-    error: null | string;
-    User?: LoginUser;
-    message: string;
-};
 
 export type ChangePasswordResponse = {
     status: number;
@@ -190,7 +184,7 @@ export type ProfileUpdateResponse = {
 }
 
 
-interface UserRegisterData {
+export interface UserRegisterData {
     id: number;
     user_id: number;
     business_id: number;
@@ -231,3 +225,30 @@ export interface UserDetailsResponse {
     Registerdata?: UserRegisterData;
     message: string;
 }
+
+export interface BusinessData {
+    id: number,
+    name: string,
+    email: string,
+    mobile: string,
+    job_title: string,
+    job_senority: string,
+    department: string,
+    company_name: string,
+    gst_no: string,
+    pan_no: string,
+    industry: string,
+    address: string,
+    verification: number,
+    status: number,
+    created_at: string,
+    updated_at: string,
+}
+export type LoginResponse = {
+    status: number;
+    error: null | string;
+    User?: LoginUser;
+    Register?: UserRegisterData,
+    Business?: BusinessData,
+    message: string;
+};

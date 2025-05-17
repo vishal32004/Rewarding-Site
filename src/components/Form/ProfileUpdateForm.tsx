@@ -37,7 +37,7 @@ const personalFormSchema = z.object({
 export type ProfileUpdateFormValues = z.infer<typeof personalFormSchema>;
 
 export const ProfileUpdateForm = () => {
-  const { user } = useAppStore();
+  const { userRegisterData } = useAppStore();
   const { mutate, isPending } = useMutation({
     mutationFn: updateProfile,
     onSuccess: (data) => {
@@ -56,25 +56,25 @@ export const ProfileUpdateForm = () => {
   const form = useForm<ProfileUpdateFormValues>({
     resolver: zodResolver(personalFormSchema),
     defaultValues: {
-      user_id: user?.id,
-      first_name: "",
-      last_name: "",
-      Gender: "",
-      Day: "",
-      Month: "",
-      Year: "",
-      Address: "",
-      City: "",
-      State: "",
-      Landmark: "",
-      PinCode: "",
-      Country: "",
-      Shipping_Address: "",
-      Shipping_City: "",
-      Shipping_State: "",
-      Shipping_Landmark: "",
-      Shipping_PinCode: "",
-      Shipping_Country: "",
+      user_id: userRegisterData?.id,
+      first_name: userRegisterData?.first_name,
+      last_name: userRegisterData?.last_name,
+      Gender: userRegisterData?.Gender,
+      Day: userRegisterData?.Day,
+      Month: userRegisterData?.Month,
+      Year: userRegisterData?.Year,
+      Address: userRegisterData?.Address,
+      City: userRegisterData?.City,
+      State: userRegisterData?.State,
+      Landmark: userRegisterData?.Landmark,
+      PinCode: userRegisterData?.PinCode,
+      Country: userRegisterData?.Country,
+      Shipping_Address: userRegisterData?.Shipping_Address,
+      Shipping_City: userRegisterData?.Shipping_City,
+      Shipping_State: userRegisterData?.Shipping_State,
+      Shipping_Landmark: userRegisterData?.Shipping_Landmark,
+      Shipping_PinCode: userRegisterData?.PinCode,
+      Shipping_Country: userRegisterData?.Country,
     },
   });
 

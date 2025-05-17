@@ -8,22 +8,38 @@ import {
 } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
-import { Lock, Building, Edit3 } from "lucide-react";
+import { Lock, Building, Edit3, CheckCircle, AlertCircle } from "lucide-react";
 import { ChangePasswordForm } from "@/components/Form/ChangePasswordForm";
 import { ProfileUpdateForm } from "@/components/Form/ProfileUpdateForm";
 import Profile from "@/components/Profile";
+import { Badge } from "@/components/ui/badge";
+import { useAppStore } from "@/store/store";
 
 export default function MyProfile() {
+  const { businessData } = useAppStore();
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <div className="container mx-auto py-10 px-4 sm:px-6">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-            My Account
-          </h1>
-          <p className="text-slate-500 mt-2">
-            Manage your profile, security, and business settings
-          </p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              My Account
+            </h1>
+            {businessData?.verification === 1 ? (
+              <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200 border">
+                <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                Verified Business
+              </Badge>
+            ) : (
+              <Badge
+                variant="outline"
+                className="bg-amber-50 text-amber-700 hover:bg-amber-50 border-amber-200 border"
+              >
+                <AlertCircle className="h-3.5 w-3.5 mr-1" />
+                Not Verified
+              </Badge>
+            )}
+          </div>
         </div>
         <div className="space-y-6">
           <Tabs defaultValue="profile" className="w-full">

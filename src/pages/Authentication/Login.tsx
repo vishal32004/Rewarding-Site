@@ -37,14 +37,16 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const { setAuth } = useAppStore();
+  const { setAuth, setBusinessData, setUserRegisterData } = useAppStore();
 
   const { mutate, isPending } = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      if (data.status === 1 && data.User) {
+      if (data.status === 1 && data.User && data.Business && data.Register) {
         toast.success(data.message);
         setAuth(data.User);
+        setBusinessData(data.Business);
+        setUserRegisterData(data.Register);
         // Redirect to login or verification page
         // navigate("/thank-you-for-request");
         // Or if you need OTP verification:

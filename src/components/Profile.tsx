@@ -1,7 +1,5 @@
-import { fetchUserDetails } from "@/api/profile";
 import { formatDate } from "@/lib/helper";
 import { useAppStore } from "@/store/store";
-import { useQuery } from "@tanstack/react-query";
 import {
   User,
   Mail,
@@ -14,17 +12,7 @@ import {
 } from "lucide-react";
 
 const Profile = () => {
-  const { user } = useAppStore();
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["userDetails"],
-    queryFn: () => fetchUserDetails(user!.email),
-    staleTime: 5 * 60 * 1000,
-    enabled: !!user?.email,
-  });
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Something Went Wrong</div>;
+  const { userRegisterData } = useAppStore();
 
   return (
     <>
@@ -43,7 +31,7 @@ const Profile = () => {
                 Full Name
               </p>
               <p className="font-medium text-gray-800 mt-1">
-                {data?.Registerdata?.first_name} {data?.Registerdata?.last_name}
+                {userRegisterData?.first_name} {userRegisterData?.last_name}
               </p>
             </div>
             <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -52,7 +40,7 @@ const Profile = () => {
               </p>
               <p className="font-medium text-gray-800 flex items-center mt-1">
                 <Mail className="mr-2 h-4 w-4 text-gray-400" />
-                {data?.Userdata?.email}
+                {userRegisterData?.email}
               </p>
             </div>
             <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -61,7 +49,7 @@ const Profile = () => {
               </p>
               <p className="font-medium text-gray-800 flex items-center mt-1">
                 <Phone className="mr-2 h-4 w-4 text-gray-400" />
-                {data?.Registerdata?.Mobile}
+                {userRegisterData?.Mobile}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -70,7 +58,7 @@ const Profile = () => {
                   Gender
                 </p>
                 <p className="font-medium text-gray-800 mt-1">
-                  {data?.Registerdata?.Gender}
+                  {userRegisterData?.Gender}
                 </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -79,8 +67,8 @@ const Profile = () => {
                 </p>
                 <p className="font-medium text-gray-800 flex items-center mt-1">
                   <Cake className="mr-2 h-4 w-4 text-gray-400" />
-                  {data?.Registerdata?.Day} {data?.Registerdata?.Month}
-                  {data?.Registerdata?.Year}
+                  {userRegisterData?.Day} {userRegisterData?.Month}
+                  {userRegisterData?.Year}
                 </p>
               </div>
             </div>
@@ -101,7 +89,7 @@ const Profile = () => {
                 Address
               </p>
               <p className="font-medium text-gray-800 mt-1">
-                {data?.Registerdata?.Address}
+                {userRegisterData?.Address}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -110,7 +98,7 @@ const Profile = () => {
                   City
                 </p>
                 <p className="font-medium text-gray-800 mt-1">
-                  {data?.Registerdata?.City}
+                  {userRegisterData?.City}
                 </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -118,7 +106,7 @@ const Profile = () => {
                   State
                 </p>
                 <p className="font-medium text-gray-800 mt-1">
-                  {data?.Registerdata?.State}
+                  {userRegisterData?.State}
                 </p>
               </div>
             </div>
@@ -129,7 +117,7 @@ const Profile = () => {
                 </p>
                 <p className="font-medium text-gray-800 flex items-center mt-1">
                   <Flag className="mr-2 h-4 w-4 text-gray-400" />
-                  {data?.Registerdata?.Country}
+                  {userRegisterData?.Country}
                 </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -138,7 +126,7 @@ const Profile = () => {
                 </p>
                 <p className="font-medium text-gray-800 flex items-center mt-1">
                   <Hash className="mr-2 h-4 w-4 text-gray-400" />
-                  {data?.Registerdata?.PinCode}
+                  {userRegisterData?.PinCode}
                 </p>
               </div>
             </div>
@@ -147,7 +135,7 @@ const Profile = () => {
                 Landmark
               </p>
               <p className="font-medium text-gray-800 mt-1">
-                {data?.Registerdata?.Landmark}
+                {userRegisterData?.Landmark}
               </p>
             </div>
           </div>
@@ -167,7 +155,7 @@ const Profile = () => {
                 Address
               </p>
               <p className="font-medium text-gray-800 mt-1">
-                {data?.Registerdata?.Shipping_Address}
+                {userRegisterData?.Shipping_Address}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -176,7 +164,7 @@ const Profile = () => {
                   City
                 </p>
                 <p className="font-medium text-gray-800 mt-1">
-                  {data?.Registerdata?.Shipping_City}
+                  {userRegisterData?.Shipping_City}
                 </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -184,7 +172,7 @@ const Profile = () => {
                   State
                 </p>
                 <p className="font-medium text-gray-800 mt-1">
-                  {data?.Registerdata?.Shipping_State}
+                  {userRegisterData?.Shipping_State}
                 </p>
               </div>
             </div>
@@ -195,7 +183,7 @@ const Profile = () => {
                 </p>
                 <p className="font-medium text-gray-800 flex items-center mt-1">
                   <Flag className="mr-2 h-4 w-4 text-gray-400" />
-                  {data?.Registerdata?.Shipping_Country}
+                  {userRegisterData?.Shipping_Country}
                 </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -204,7 +192,7 @@ const Profile = () => {
                 </p>
                 <p className="font-medium text-gray-800 flex items-center mt-1">
                   <Hash className="mr-2 h-4 w-4 text-gray-400" />
-                  {data?.Registerdata?.Shipping_PinCode}
+                  {userRegisterData?.Shipping_PinCode}
                 </p>
               </div>
             </div>
@@ -213,7 +201,7 @@ const Profile = () => {
                 Landmark
               </p>
               <p className="font-medium text-gray-800 mt-1">
-                {data?.Registerdata?.Shipping_Landmark}
+                {userRegisterData?.Shipping_Landmark}
               </p>
             </div>
           </div>
@@ -227,7 +215,7 @@ const Profile = () => {
               Account Created
             </p>
             <p className="font-medium text-gray-800 mt-1">
-              {formatDate(data?.Userdata?.created_at ?? "")}
+              {formatDate(userRegisterData?.created_at ?? "")}
             </p>
           </div>
           <div>
@@ -235,7 +223,7 @@ const Profile = () => {
               Last Updated
             </p>
             <p className="font-medium text-gray-800 mt-1">
-              {formatDate(data?.Registerdata?.updated_at ?? "")}
+              {formatDate(userRegisterData?.updated_at ?? "")}
             </p>
           </div>
         </div>

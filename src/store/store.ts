@@ -12,6 +12,8 @@ export const useAppStore = create<RootStore>()(
             name: "auth-storage",
             partialize: (state) => ({
                 user: state.user,
+                userRegisterData: state.userRegisterData,
+                businessData: state.businessData,
                 isAuthenticated: state.isAuthenticated,
             }),
         })(...a),
