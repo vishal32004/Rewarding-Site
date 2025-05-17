@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Lock, Building, Edit3 } from "lucide-react";
 import { ChangePasswordForm } from "@/components/Form/ChangePasswordForm";
-import { BusinessVerificationForm } from "@/components/Form/BusinessVerificationForm";
+import { ProfileUpdateForm } from "@/components/Form/ProfileUpdateForm";
 import Profile from "@/components/Profile";
 
 export default function MyProfile() {
@@ -44,7 +44,7 @@ export default function MyProfile() {
                 value="business"
                 className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
-                Business Verification
+                Profile Update
               </TabsTrigger>
             </TabsList>
 
@@ -108,17 +108,16 @@ export default function MyProfile() {
                     </div>
                     <div>
                       <CardTitle className="text-xl">
-                        Business Verification
+                        Update Your Profile
                       </CardTitle>
                       <CardDescription>
-                        Verify your business to unlock additional features and
-                        benefits
+                        Update Your Profile Details
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6 space-y-5">
-                  <BusinessVerificationForm />
+                  <ProfileUpdateForm />
                 </CardContent>
               </Card>
             </TabsContent>

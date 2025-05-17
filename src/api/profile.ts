@@ -1,5 +1,5 @@
 import { ChangePasswordResponse, ProfileUpdateResponse, UserDetailsResponse } from "@/@types/api/Auth.types";
-import { ProfileUpdateForm } from "@/components/Form/BusinessVerificationForm"
+import { ProfileUpdateFormValues } from "@/components/Form/ProfileUpdateForm"
 import { ChangePasswordFormValues } from "@/components/Form/ChangePasswordForm";
 import { BASE_URL } from "@/lib/constant";
 import axios, { AxiosError } from "axios";
@@ -19,7 +19,7 @@ export const changePassword = async (data: ChangePasswordFormValues): Promise<Ch
     }
 };
 
-export const updateProfile = async (data: ProfileUpdateForm): Promise<ProfileUpdateResponse> => {
+export const updateProfile = async (data: ProfileUpdateFormValues): Promise<ProfileUpdateResponse> => {
     try {
         const response = await axios.post<ProfileUpdateResponse>(`${BASE_URL}/profile`, data);
         return response.data;

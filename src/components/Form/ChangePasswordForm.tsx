@@ -5,7 +5,7 @@ import { z } from "zod";
 import CustomFormField from "@/components/CustomFormField";
 import { FormFieldType } from "@/@types/CustomFormField.types";
 import { Form } from "@/components/ui/form";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, LoaderCircle } from "lucide-react";
 import { useAppStore } from "@/store/store";
 import { toast } from "sonner";
 import { changePassword } from "@/api/profile";
@@ -149,6 +149,7 @@ export const ChangePasswordForm = () => {
             className="bg-gradient-to-r from-slate-800 to-slate-700 hover:from-slate-700 hover:to-slate-600"
             disabled={isPending}
           >
+            {isPending && <LoaderCircle className="animate-spin" />}
             Update Password
           </Button>
         </div>

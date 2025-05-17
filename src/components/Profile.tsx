@@ -9,10 +9,8 @@ import {
   Home,
   Flag,
   Navigation,
-  Building,
   Hash,
   Cake,
-  Check,
 } from "lucide-react";
 
 const Profile = () => {
@@ -45,8 +43,7 @@ const Profile = () => {
                 Full Name
               </p>
               <p className="font-medium text-gray-800 mt-1">
-                {data?.Registerdata?.first_name}
-                {data?.Registerdata?.last_name}
+                {data?.Registerdata?.first_name} {data?.Registerdata?.last_name}
               </p>
             </div>
             <div className="bg-white p-3 rounded-lg border border-gray-100">
@@ -157,7 +154,7 @@ const Profile = () => {
         </div>
 
         {/* Shipping Address */}
-        <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
+        <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm md:col-span-2">
           <h3 className="text-lg font-semibold mb-5 flex items-center text-gray-800">
             <div className="bg-amber-100 p-2 rounded-lg mr-3">
               <Navigation className="h-5 w-5 text-amber-600" />
@@ -218,62 +215,6 @@ const Profile = () => {
               <p className="font-medium text-gray-800 mt-1">
                 {data?.Registerdata?.Shipping_Landmark}
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Company & Verification */}
-        <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
-          <h3 className="text-lg font-semibold mb-5 flex items-center text-gray-800">
-            <div className="bg-sky-100 p-2 rounded-lg mr-3">
-              <Building className="h-5 w-5 text-sky-600" />
-            </div>
-            Company & Verification
-          </h3>
-          <div className="space-y-4">
-            <div className="bg-white p-3 rounded-lg border border-gray-100">
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Company Name
-              </p>
-              <p className="font-medium text-gray-800 mt-1">
-                {data?.Registerdata?.company_name}
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white p-3 rounded-lg border border-gray-100">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  GST Number
-                </p>
-                <p className="font-medium text-gray-800 mt-1">
-                  {data?.Registerdata?.gst_no}
-                </p>
-              </div>
-              <div className="bg-white p-3 rounded-lg border border-gray-100">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  PAN Number
-                </p>
-                <p className="font-medium text-gray-800 mt-1">
-                  {data?.Registerdata?.pan_no}
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white p-3 rounded-lg border border-gray-100 flex items-center">
-                <div className="bg-green-100 p-1.5 rounded-full mr-3">
-                  <Check className="h-3.5 w-3.5 text-green-600" />
-                </div>
-                <span className="text-sm font-medium text-gray-700">
-                  Email Verified
-                </span>
-              </div>
-              <div className="bg-white p-3 rounded-lg border border-gray-100 flex items-center">
-                <div className="bg-green-100 p-1.5 rounded-full mr-3">
-                  <Check className="h-3.5 w-3.5 text-green-600" />
-                </div>
-                <span className="text-sm font-medium text-gray-700">
-                  Terms Accepted
-                </span>
-              </div>
             </div>
           </div>
         </div>

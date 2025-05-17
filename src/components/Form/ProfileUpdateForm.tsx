@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { updateProfile } from "@/api/profile";
 import { useAppStore } from "@/store/store";
+import { LoaderCircle } from "lucide-react";
 
 const personalFormSchema = z.object({
   user_id: z.number(),
@@ -31,14 +32,11 @@ const personalFormSchema = z.object({
   Shipping_Landmark: z.string().optional(),
   Shipping_PinCode: z.string().optional(),
   Shipping_Country: z.string().optional(),
-  company_name: z.string().min(1, "Company name is required"),
-  gst_no: z.string().min(1, "GST number is required"),
-  pan_no: z.string().min(1, "PAN number is required"),
 });
 
-export type ProfileUpdateForm = z.infer<typeof personalFormSchema>;
+export type ProfileUpdateFormValues = z.infer<typeof personalFormSchema>;
 
-export const BusinessVerificationForm = () => {
+export const ProfileUpdateForm = () => {
   const { user } = useAppStore();
   const { mutate, isPending } = useMutation({
     mutationFn: updateProfile,
@@ -55,7 +53,7 @@ export const BusinessVerificationForm = () => {
     },
   });
 
-  const form = useForm<ProfileUpdateForm>({
+  const form = useForm<ProfileUpdateFormValues>({
     resolver: zodResolver(personalFormSchema),
     defaultValues: {
       user_id: user?.id,
@@ -77,13 +75,10 @@ export const BusinessVerificationForm = () => {
       Shipping_Landmark: "",
       Shipping_PinCode: "",
       Shipping_Country: "",
-      company_name: "",
-      gst_no: "",
-      pan_no: "",
     },
   });
 
-  const onSubmit = (values: ProfileUpdateForm) => {
+  const onSubmit = (values: ProfileUpdateFormValues) => {
     console.log("Personal form submitted:", values);
     mutate(values);
   };
@@ -235,9 +230,6 @@ export const BusinessVerificationForm = () => {
           </CustomFormField>
 
           <div className="md:col-span-2">
-            <h3 className="text-lg font-medium mb-4">
-              Shipping Address (Optional)
-            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CustomFormField
                 control={form.control}
@@ -293,47 +285,16 @@ export const BusinessVerificationForm = () => {
               </CustomFormField>
             </div>
           </div>
-
-          <CustomFormField
-            control={form.control}
-            name="company_name"
-            fieldType={FormFieldType.INPUT}
-            label="Company Name"
-            placeholder="Enter your company name"
-          />
-
-          <CustomFormField
-            control={form.control}
-            name="gst_no"
-            fieldType={FormFieldType.INPUT}
-            label="GST Number"
-            placeholder="Enter GST number"
-          />
-
-          <CustomFormField
-            control={form.control}
-            name="pan_no"
-            fieldType={FormFieldType.INPUT}
-            label="PAN Number"
-            placeholder="Enter PAN number"
-          />
         </div>
 
         <div className="flex justify-end gap-4 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => form.reset()}
-            className="border-slate-200 text-slate-700 hover:bg-slate-100"
-          >
-            Save as Draft
-          </Button>
           <Button
             type="submit"
             className="bg-gradient-to-r from-slate-800 to-slate-700 hover:from-slate-700 hover:to-slate-600"
             disabled={isPending}
           >
-            Submit for Verification
+            {isPending && <LoaderCircle className="animate-spin" />} Submit for
+            Verification
           </Button>
         </div>
       </form>

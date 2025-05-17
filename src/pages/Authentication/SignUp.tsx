@@ -13,6 +13,7 @@ import { FormFieldType } from "@/@types/CustomFormField.types";
 import { signUp } from "@/api/authentication";
 import { toast } from "sonner";
 import { SelectItem } from "@/components/ui/select";
+import { LoaderCircle } from "lucide-react";
 
 const signupFormSchema = z.object({
   company_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -36,7 +37,6 @@ const Signup = () => {
         // Or if you need OTP verification:
         // setOpen(true);
       } else {
-        console.log(data.error);
         toast.error(data.error || "Failed to create account");
       }
     },
@@ -67,7 +67,7 @@ const Signup = () => {
       <div className="w-full md:max-w-4xl">
         <div className="flex flex-col gap-6 items-center">
           <img
-            src="images/logo.jpeg"
+            src="images/logo.png"
             alt="Lukit gifts"
             height={100}
             width={100}
@@ -122,6 +122,7 @@ const Signup = () => {
                         name="number_of_employee"
                         fieldType={FormFieldType.SELECT}
                         label="Number Of Employees"
+                        placeholder="Select"
                       >
                         <SelectItem value="0-50">0-50</SelectItem>
                         <SelectItem value="51 - 200">51 - 200</SelectItem>
@@ -131,11 +132,7 @@ const Signup = () => {
                         <SelectItem value="5001 - 10000">
                           5001 - 10000
                         </SelectItem>
-                        <SelectItem
-                          value="10000+"
-                        >
-                          10000+
-                        </SelectItem>
+                        <SelectItem value="10000+">10000+</SelectItem>
                       </CustomFormField>
                     </div>
                     <Button
@@ -143,6 +140,7 @@ const Signup = () => {
                       className="w-full cursor-pointer"
                       disabled={isPending}
                     >
+                      {isPending && <LoaderCircle className="animate-spin" />}{" "}
                       Sign Up
                     </Button>
                     <div className="text-center text-sm">

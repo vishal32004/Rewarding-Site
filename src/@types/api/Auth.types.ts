@@ -193,6 +193,7 @@ export type ProfileUpdateResponse = {
 interface UserRegisterData {
     id: number;
     user_id: number;
+    business_id: number;
     social_id: string | null;
     avatar: string | null;
     user_type: string;
@@ -218,9 +219,6 @@ interface UserRegisterData {
     Year: string;
     term: string;
     v_email: string;
-    company_name: string;
-    gst_no: string;
-    pan_no: string;
     status: number;
     created_at: string;
     updated_at: string;

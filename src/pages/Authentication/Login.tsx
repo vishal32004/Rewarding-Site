@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 
 import {
   Form,
@@ -51,12 +51,14 @@ const Login = () => {
         // setOpen(true);
         navigate(from, { replace: true });
       } else {
-        console.log(data.error);
         toast.error(data.message || "Failed to Login");
       }
     },
     onError: (error) => {
-      toast.error(error.message || "An error occurred during signup");
+      toast.error(
+        error.message ||
+          "An error occurred during login please try again in sometime"
+      );
     },
   });
 
@@ -83,7 +85,7 @@ const Login = () => {
       <div className="w-full md:max-w-4xl">
         <div className="flex justify-center items-center gap-6 flex-col">
           <img
-            src="images/logo.jpeg"
+            src="images/logo.png"
             alt="Lukit gifts"
             height={100}
             width={100}
@@ -146,6 +148,7 @@ const Login = () => {
                       className="w-full cursor-pointer"
                       disabled={isPending}
                     >
+                      {isPending && <LoaderCircle className="animate-spin" />}
                       Login
                     </Button>
                     <div className="text-center text-sm">
@@ -155,6 +158,15 @@ const Login = () => {
                         className="underline underline-offset-4 ml-2"
                       >
                         Sign up
+                      </Link>
+                    </div>
+
+                    <div className="text-center text-sm">
+                      <Link
+                        to="/forgot-password"
+                        className="underline underline-offset-4 ml-2"
+                      >
+                        Forgot Password ?
                       </Link>
                     </div>
                   </div>
